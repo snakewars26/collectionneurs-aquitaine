@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Collectionneurs d’Aquitaine – objets de collection entre particuliers</title>
-<meta name="description" content="Petites annonces d’objets de collection entre particuliers en Nouvelle-Aquitaine.">
+<meta name="description" content="Petites annonces d’objets de collection entre particuliers en Nouvelle-Aquitaine : vente, échange et don.">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
@@ -48,6 +48,7 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 .thumbs{display:flex;gap:8px;flex-wrap:wrap}.th{position:relative;width:72px;height:72px;border-radius:8px;background:var(--line) center/cover;border:0;padding:0;cursor:pointer}.th span{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:14px;line-height:22px;text-align:center}.addph{text-align:center;cursor:pointer;display:block}.lbl{font-size:.88rem;color:var(--muted)}.field{display:grid;gap:8px}
 .tabs{display:flex;gap:6px;overflow-x:auto;margin-top:14px;padding-bottom:2px}.tabs button{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 14px;white-space:nowrap;cursor:pointer}.tabs button.on{background:var(--pine);color:var(--head-ink);border-color:var(--pine)}
 .card{position:relative}.heart{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);color:#8e2a3b;display:grid;place-items:center;font-size:1.2rem;z-index:1}
+.tag.k{background:var(--pine);color:var(--head-ink)}.free{color:var(--pine)}@media (prefers-color-scheme:dark){.free{color:#8fd1bd}}
 .empty{padding:40px 0;text-align:center;color:var(--muted)}
 .tel{font-size:1.3rem;font-weight:800}
 footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:center}footer a{color:var(--muted)}
@@ -55,12 +56,12 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 </head>
 <body>
 <header><div class="wrap">
-  <div><h1>Collectionneurs d’Aquitaine</h1><p>Objets de collection, entre particuliers, en main propre.</p></div>
+  <div><h1>Collectionneurs d’Aquitaine</h1><p>Vendre, échanger ou donner des objets de collection, en main propre.</p></div>
   <div class="row"><button class="btn light" id="newBtn">Déposer une annonce</button><button class="btn light" id="authBtn">Connexion</button></div>
 </div></header>
 
 <main class="wrap">
-  <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button><button data-t="msg">Messages</button></nav>
+  <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="echange">⇄ Échanges</button><button data-t="don">🎁 Dons</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button><button data-t="msg">Messages</button></nav>
   <div class="filters">
     <input class="search" id="q" type="search" placeholder="Pièce, disque, figurine, carte…" aria-label="Recherche">
     <select id="cat" aria-label="Catégorie"></select>
@@ -73,12 +74,12 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <p class="count" id="count">Chargement…</p>
   <div class="grid" id="grid"></div>
 </main>
-<footer>Site réservé aux particuliers. Vente en main propre uniquement.<br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a></footer>
+<footer>Site réservé aux particuliers. Vente, échange et don en main propre uniquement.<br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a></footer>
 
 <dialog id="detail"><div class="dl" id="detailBody"></div></dialog>
 
 <dialog id="contact"><form class="dl form" id="contactForm" method="dialog">
-  <h2>Écrire au vendeur</h2>
+  <h2>Écrire à l’annonceur</h2>
   <label>Votre prénom<input name="name" required maxlength="40"></label>
   <label>Votre email (le vendeur vous répondra dessus)<input name="email" type="email" required maxlength="120"></label>
   <label>Message<textarea name="body" rows="4" required minlength="5" maxlength="1000"></textarea></label>
@@ -100,12 +101,14 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 
 <dialog id="post"><form class="dl form" id="form" method="dialog">
   <h2>Déposer une annonce</h2>
+  <label>Type d’annonce<select name="kind" id="fkind"><option value="vente">Vente</option><option value="echange">Échange</option><option value="don">Don (gratuit)</option></select></label>
   <label>Titre<input name="title" required minlength="3" maxlength="70"></label>
-  <div class="row"><label style="flex:1">Prix (€)<input name="price" type="number" min="0" required></label>
+  <div class="row"><label style="flex:1" id="priceLbl">Prix (€)<input name="price" id="fprice" type="number" min="0" required></label>
   <label style="flex:1">Catégorie<select name="cat" id="fcat"></select></label></div>
   <div class="row"><label style="flex:1">Département<select name="dep" id="fdep"></select></label>
   <label style="flex:1">Ville<input name="city" required maxlength="40"></label></div>
   <label>État de l’objet<select name="etat" id="fetat"></select></label>
+  <label id="wantLbl" hidden>Je cherche en échange<input name="want" id="fwant" maxlength="100" placeholder="Ex. : pièces de 2 € commémoratives, 45 tours des années 60…"></label>
   <label>Description<textarea name="desc" rows="3" maxlength="600" required></textarea></label>
   <label>Téléphone (visible seulement par les membres connectés)<input name="tel" type="tel" required pattern="[0-9 +.]{10,16}"></label>
   <div class="field"><span class="lbl">Photos (6 maximum, la première sera la photo principale)</span><div class="thumbs" id="thumbs"></div><label class="btn alt addph" id="addLbl">+ Ajouter des photos<input type="file" accept="image/*" multiple id="photo" hidden></label></div>
@@ -129,6 +132,9 @@ $("cat").innerHTML=opts(CATS,"Toutes les catégories");$("dep").innerHTML=opts(D
 $("fcat").innerHTML=opts(CATS);$("fdep").innerHTML=opts(DEPS);$("fetat").innerHTML=ETATS.map(e=>`<option>${e}</option>`).join("");$("etat").innerHTML='<option value="">Tous les états</option>'+ETATS.map(e=>`<option>${e}</option>`).join("");
 
 let ads=[],user=null,signup=false,favs=new Set(),follows=new Set(),msgs=[],tab="all";
+const KINDS={vente:"Vente",echange:"Échange",don:"Don"};
+const kindOf=a=>a.kind||"vente";
+const priceTxt=a=>kindOf(a)==="don"?"Gratuit":kindOf(a)==="echange"?"Échange":eur(a.price);
 const day=864e5,when=a=>new Date(a.boosted_at||a.created_at).getTime();
 const ago=a=>{const d=Math.floor((Date.now()-when(a))/day);return d<1?"Aujourd’hui":d===1?"Hier":"Il y a "+d+" jours"};
 
@@ -145,8 +151,8 @@ function render(){
   $("count").textContent=list.length+(list.length>1?" annonces":" annonce");
   $("grid").innerHTML=list.length?list.map(a=>`<button class="card" data-id="${esc(a.id)}"><span class="heart" data-fav="${esc(a.id)}" role="button" aria-label="Favori">${favs.has(a.id)?"♥":"♡"}</span>
     <div class="ph" style="${a.photo_url?`background-image:url('${esc(a.photo_url)}')`:''}">${a.photo_url?"":esc(a.category)}</div>
-    <div class="b">${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price">${eur(a.price)}</div>
-    <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):'<div class="empty">${emptyMsg()}</div>';
+    <div class="b">${kindOf(a)!=="vente"?`<span class="tag k">${esc(KINDS[kindOf(a)])}</span> `:''}${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
+    <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
 }
 ["q","cat","dep","etat","max","sort"].forEach(id=>$(id).addEventListener("input",render));
 $("grid").addEventListener("click",async e=>{const dm=e.target.closest("[data-delmsg]");if(dm){if(!confirm("Supprimer ce message ?"))return;const {error}=await sb.from("messages").delete().eq("id",dm.dataset.delmsg);if(!error){msgs=msgs.filter(m=>m.id!==dm.dataset.delmsg);document.querySelector('#tabs [data-t="msg"]').textContent="Messages"+(msgs.length?" ("+msgs.length+")":"");renderMsgs()}return}const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b)openDetail(b.dataset.id)});
@@ -156,12 +162,12 @@ function openDetail(id){
   const mine=user&&user.id===a.user_id;
   const ph=a.photos&&a.photos.length?a.photos:(a.photo_url?[a.photo_url]:[]);
   $("detailBody").innerHTML=`<div class="ph" id="mainPh" style="${ph[0]?`background-image:url('${esc(ph[0])}')`:''}">${ph[0]?"":esc(a.category)}</div>${ph.length>1?`<div class="thumbs">${ph.map(u=>`<button type="button" class="th" data-u="${esc(u)}" style="background-image:url('${esc(u)}')" aria-label="Voir la photo"></button>`).join("")}</div>`:""}
-  <h2>${esc(a.title)}</h2><div class="price">${eur(a.price)}</div>
-  <div class="meta">${esc(CATS[a.category]||"")} · ${esc(a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
+  <h2>${esc(a.title)}</h2><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
+  <div class="meta">${esc(KINDS[kindOf(a)])} · ${esc(CATS[a.category]||"")} · ${esc(a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
   <p>${esc(a.description)}</p>
   <div class="meta">Vendeur : <b>${esc(a.seller_name||"Particulier")}</b></div>
-  <div id="tel" class="row">${mine?"":'<button class="btn" id="contactBtn">✉ Contacter le vendeur</button>'}<button class="btn alt" id="showTel">Voir le numéro</button></div>
-  <p class="note">Demandez des photos détaillées et vérifiez l’authenticité avant d’acheter. Vente en main propre uniquement.</p>
+  <div id="tel" class="row">${mine?"":'<button class="btn" id="contactBtn">✉ Contacter l’annonceur</button>'}<button class="btn alt" id="showTel">Voir le numéro</button></div>
+  <p class="note">Demandez des photos détaillées et vérifiez l’objet avant tout accord. Remise en main propre uniquement, sans paiement à l’avance.</p>
   <div class="row"><button class="btn alt" id="fav">${favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"}</button>${mine?'<button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="follow">'+(follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur")+'</button><button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="close">Fermer</button></div>`;
   document.querySelectorAll("#detailBody .th").forEach(t=>t.onclick=()=>{$("mainPh").style.backgroundImage="url('"+t.dataset.u+"')"});
   if($("contactBtn"))$("contactBtn").onclick=()=>openContact(a);
@@ -219,16 +225,16 @@ async function loadMine(){
   favs=new Set();follows=new Set();msgs=[];
   if(user){const [f,w]=await Promise.all([sb.from("favorites").select("listing_id"),sb.from("follows").select("seller_id")]);
     (f.data||[]).forEach(r=>favs.add(r.listing_id));(w.data||[]).forEach(r=>follows.add(r.seller_id));const m=await sb.from("messages").select("*").order("created_at",{ascending:false});msgs=m.data||[]}
-  else if(tab!=="all"){tab="all";syncTabs()}
+  else if(!["all","echange","don"].includes(tab)){tab="all";syncTabs()}
   document.querySelector('#tabs [data-t="msg"]').textContent="Messages"+(msgs.length?" ("+msgs.length+")":"");
   render();
 }
 function syncTabs(){document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab))}
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-  if(b.dataset.t!=="all"&&!user){openAuth("Connectez-vous pour accéder à cette rubrique.");return}
+  if(!["all","echange","don"].includes(b.dataset.t)&&!user){openAuth("Connectez-vous pour accéder à cette rubrique.");return}
   tab=b.dataset.t;syncTabs();render()});
-function tabOk(a){return tab==="all"||(tab==="fav"&&favs.has(a.id))||(tab==="follow"&&follows.has(a.user_id))||(tab==="mine"&&user&&a.user_id===user.id)}
-function emptyMsg(){return {fav:"Aucun favori pour l’instant. Touchez le cœur d’une annonce pour la retrouver ici.",follow:"Vous ne suivez encore personne. Ouvrez une annonce et touchez « Suivre ce vendeur ».",mine:"Vous n’avez pas encore d’annonce. Touchez « Déposer une annonce ».",all:"Aucune annonce ne correspond. Soyez le premier à déposer la vôtre."}[tab]}
+function tabOk(a){return tab==="all"||(tab==="fav"&&favs.has(a.id))||(tab==="follow"&&follows.has(a.user_id))||(tab==="mine"&&user&&a.user_id===user.id)||(tab==="echange"&&kindOf(a)==="echange")||(tab==="don"&&kindOf(a)==="don")}
+function emptyMsg(){return {fav:"Aucun favori pour l’instant. Touchez le cœur d’une annonce pour la retrouver ici.",follow:"Vous ne suivez encore personne. Ouvrez une annonce et touchez « Suivre ce vendeur ».",mine:"Vous n’avez pas encore d’annonce. Touchez « Déposer une annonce ».",echange:"Aucun échange proposé pour l’instant. Déposez le premier !",don:"Aucun don pour l’instant. Vous avez des objets à donner ? Déposez une annonce.",all:"Aucune annonce ne correspond. Soyez le premier à déposer la vôtre."}[tab]}
 
 /* Auth */
 function setUser(u){user=u;$("authBtn").textContent=u?"Déconnexion":"Connexion";loadMine()}
@@ -254,7 +260,9 @@ $("authForm").addEventListener("submit",async e=>{
 });
 
 /* Dépôt d'annonce */
-$("newBtn").onclick=()=>{if(!user)openAuth("Connectez-vous pour déposer une annonce.");else{$("postMsg").textContent="";$("post").showModal()}};
+$("newBtn").onclick=()=>{if(!user)openAuth("Connectez-vous pour déposer une annonce.");else{$("postMsg").textContent="";syncKind();$("post").showModal()}};
+function syncKind(){const k=$("fkind").value;$("priceLbl").hidden=k!=="vente";$("fprice").required=k==="vente";$("wantLbl").hidden=k!=="echange"}
+$("fkind").addEventListener("change",syncKind);
 $("cancel").onclick=()=>$("post").close();
 function resize(file){return new Promise(res=>{if(!file)return res(null);const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,900/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=i.width*k;c.height=i.height*k;c.getContext("2d").drawImage(i,0,0,c.width,c.height);c.toBlob(b=>res(b),"image/jpeg",.75)};i.onerror=()=>res(null);i.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
 let pics=[];
@@ -263,7 +271,7 @@ $("photo").addEventListener("change",async e=>{for(const f of [...e.target.files
 $("thumbs").addEventListener("click",e=>{const x=e.target.closest("span[data-i]");if(x){pics.splice(+x.dataset.i,1);drawThumbs()}});
 $("form").addEventListener("submit",async e=>{
   e.preventDefault();if(!user)return;
-  const f=new FormData(e.target),btn=$("postGo"),msg=$("postMsg");
+  const f=new FormData(e.target),btn=$("postGo"),msg=$("postMsg"),k=f.get("kind");
   btn.disabled=true;msg.textContent="Publication…";
   try{
     let pseudo=(user.user_metadata&&user.user_metadata.pseudo)||"";
@@ -272,11 +280,11 @@ $("form").addEventListener("submit",async e=>{
     for(const p of pics){const path=`${user.id}/${crypto.randomUUID()}.jpg`;
       const up=await sb.storage.from("photos").upload(path,p.b,{contentType:"image/jpeg"});
       if(up.error)throw up.error;urls.push(sb.storage.from("photos").getPublicUrl(path).data.publicUrl)}
-    const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:f.get("desc").trim(),price:+f.get("price"),category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url:urls[0]||null,photos:urls,seller_name:pseudo||null}).select("id").single();
+    const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:((k==="echange"&&f.get("want").trim()?"Échange souhaité : "+f.get("want").trim()+"\n":"")+f.get("desc").trim()).slice(0,700),kind:k,price:k==="vente"?+f.get("price"):0,category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url:urls[0]||null,photos:urls,seller_name:pseudo||null}).select("id").single();
     if(ins.error)throw ins.error;
     const ct=await sb.from("listing_contacts").insert({listing_id:ins.data.id,phone:f.get("tel").trim()});
     if(ct.error)throw ct.error;
-    e.target.reset();pics=[];drawThumbs();$("post").close();load();
+    e.target.reset();syncKind();pics=[];drawThumbs();$("post").close();load();
   }catch(err){msg.textContent="Erreur : "+(err.message||err)}
   btn.disabled=false;
 });
