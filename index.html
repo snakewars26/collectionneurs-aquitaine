@@ -45,6 +45,7 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .note{font-size:.82rem;color:var(--muted)}
 .msg{font-size:.88rem;color:var(--accent);min-height:1.2em}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}.th{position:relative;width:72px;height:72px;border-radius:8px;background:var(--line) center/cover;border:0;padding:0;cursor:pointer}.th span{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:14px;line-height:22px;text-align:center}.addph{text-align:center;cursor:pointer;display:block}.lbl{font-size:.88rem;color:var(--muted)}.field{display:grid;gap:8px}
 .empty{padding:40px 0;text-align:center;color:var(--muted)}
 .tel{font-size:1.3rem;font-weight:800}
 footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:center}
@@ -90,7 +91,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <label>État de l’objet<select name="etat" id="fetat"></select></label>
   <label>Description<textarea name="desc" rows="3" maxlength="600" required></textarea></label>
   <label>Téléphone (visible seulement par les membres connectés)<input name="tel" type="tel" required pattern="[0-9 +.]{10,16}"></label>
-  <label>Photo (facultatif)<input type="file" accept="image/*" id="photo"></label>
+  <div class="field"><span class="lbl">Photos (6 maximum, la première sera la photo principale)</span><div class="thumbs" id="thumbs"></div><label class="btn alt addph" id="addLbl">+ Ajouter des photos<input type="file" accept="image/*" multiple id="photo" hidden></label></div>
   <label class="row" style="align-items:center;flex-wrap:nowrap"><input type="checkbox" name="part" required style="width:auto"> Je certifie être un particulier et non un professionnel.</label>
   <div class="msg" id="postMsg" role="alert"></div>
   <div class="row"><button class="btn" type="submit" id="postGo">Publier</button><button class="btn alt" type="button" id="cancel">Annuler</button></div>
@@ -101,7 +102,7 @@ const SUPABASE_URL="https://buwcofosofpdvesirtpt.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1d2NvZm9zb2ZwZHZlc2lydHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ3MjE3ODYsImV4cCI6MjExMDI5Nzc4Nn0.TH1rg9mRsqTtKlB17--gP62IDyJ2NQirN5FiUV-UqJQ";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const CATS={"🪙":"Monnaies & médailles","📮":"Timbres & cartes postales","🃏":"Cartes à collectionner","🧸":"Jouets & figurines","💿":"Vinyles & disques","📚":"Livres & BD anciennes","🕰️":"Montres & horlogerie","🏺":"Antiquités & brocante"};
-const ETATS=["Neuf / scellé","Très bon état","Bon état","À restaurer"];
+const ETATS=["Neuf avec étiquette","Neuf sans étiquette","Très bon état","Bon état","État satisfaisant","À restaurer"];
 const DEPS={16:"Charente",17:"Charente-Maritime",19:"Corrèze",23:"Creuse",24:"Dordogne",33:"Gironde",40:"Landes",47:"Lot-et-Garonne",64:"Pyrénées-Atlantiques",79:"Deux-Sèvres",86:"Vienne",87:"Haute-Vienne"};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -127,7 +128,7 @@ function render(){
   $("grid").innerHTML=list.length?list.map(a=>`<button class="card" data-id="${esc(a.id)}">
     <div class="ph" style="${a.photo_url?`background-image:url('${esc(a.photo_url)}')`:''}">${a.photo_url?"":esc(a.category)}</div>
     <div class="b">${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price">${eur(a.price)}</div>
-    <div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):'<div class="empty">Aucune annonce ne correspond. Soyez le premier à déposer la vôtre.</div>';
+    <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):'<div class="empty">Aucune annonce ne correspond. Soyez le premier à déposer la vôtre.</div>';
 }
 ["q","cat","dep","max","sort"].forEach(id=>$(id).addEventListener("input",render));
 $("grid").addEventListener("click",e=>{const b=e.target.closest(".card");if(b)openDetail(b.dataset.id)});
@@ -135,13 +136,15 @@ $("grid").addEventListener("click",e=>{const b=e.target.closest(".card");if(b)op
 function openDetail(id){
   const a=ads.find(x=>x.id===id);if(!a)return;
   const mine=user&&user.id===a.user_id;
-  $("detailBody").innerHTML=`<div class="ph" style="${a.photo_url?`background-image:url('${esc(a.photo_url)}')`:''}">${a.photo_url?"":esc(a.category)}</div>
+  const ph=a.photos&&a.photos.length?a.photos:(a.photo_url?[a.photo_url]:[]);
+  $("detailBody").innerHTML=`<div class="ph" id="mainPh" style="${ph[0]?`background-image:url('${esc(ph[0])}')`:''}">${ph[0]?"":esc(a.category)}</div>${ph.length>1?`<div class="thumbs">${ph.map(u=>`<button type="button" class="th" data-u="${esc(u)}" style="background-image:url('${esc(u)}')" aria-label="Voir la photo"></button>`).join("")}</div>`:""}
   <h2>${esc(a.title)}</h2><div class="price">${eur(a.price)}</div>
   <div class="meta">${esc(CATS[a.category]||"")} · ${esc(a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
   <p>${esc(a.description)}</p>
   <div id="tel"><button class="btn" id="showTel">Voir le numéro</button></div>
   <p class="note">Demandez des photos détaillées et vérifiez l’authenticité avant d’acheter. Rencontre en main propre, dans un lieu public, sans livraison. Ne payez jamais à l’avance.</p>
   <div class="row">${mine?'<button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="close">Fermer</button></div>`;
+  document.querySelectorAll("#detailBody .th").forEach(t=>t.onclick=()=>{$("mainPh").style.backgroundImage="url('"+t.dataset.u+"')"});
   $("showTel").onclick=async()=>{
     if(!user){$("detail").close();openAuth("Connectez-vous pour voir le numéro.");return}
     const {data,error}=await sb.from("listing_contacts").select("phone").eq("listing_id",id).maybeSingle();
@@ -188,20 +191,24 @@ $("authForm").addEventListener("submit",async e=>{
 $("newBtn").onclick=()=>{if(!user)openAuth("Connectez-vous pour déposer une annonce.");else{$("postMsg").textContent="";$("post").showModal()}};
 $("cancel").onclick=()=>$("post").close();
 function resize(file){return new Promise(res=>{if(!file)return res(null);const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,900/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=i.width*k;c.height=i.height*k;c.getContext("2d").drawImage(i,0,0,c.width,c.height);c.toBlob(b=>res(b),"image/jpeg",.75)};i.onerror=()=>res(null);i.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
+let pics=[];
+function drawThumbs(){$("thumbs").innerHTML=pics.map((p,i)=>`<div class="th" style="background-image:url('${p.u}')"><span data-i="${i}" role="button" aria-label="Retirer la photo">×</span></div>`).join("");$("addLbl").style.display=pics.length>=6?"none":""}
+$("photo").addEventListener("change",async e=>{for(const f of [...e.target.files]){if(pics.length>=6)break;const b=await resize(f);if(b)pics.push({b,u:URL.createObjectURL(b)})}e.target.value="";drawThumbs()});
+$("thumbs").addEventListener("click",e=>{const x=e.target.closest("span[data-i]");if(x){pics.splice(+x.dataset.i,1);drawThumbs()}});
 $("form").addEventListener("submit",async e=>{
   e.preventDefault();if(!user)return;
   const f=new FormData(e.target),btn=$("postGo"),msg=$("postMsg");
   btn.disabled=true;msg.textContent="Publication…";
   try{
-    let photo_url=null;const blob=await resize($("photo").files[0]);
-    if(blob){const path=`${user.id}/${crypto.randomUUID()}.jpg`;
-      const up=await sb.storage.from("photos").upload(path,blob,{contentType:"image/jpeg"});
-      if(up.error)throw up.error;photo_url=sb.storage.from("photos").getPublicUrl(path).data.publicUrl}
-    const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:f.get("desc").trim(),price:+f.get("price"),category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url}).select("id").single();
+    const urls=[];
+    for(const p of pics){const path=`${user.id}/${crypto.randomUUID()}.jpg`;
+      const up=await sb.storage.from("photos").upload(path,p.b,{contentType:"image/jpeg"});
+      if(up.error)throw up.error;urls.push(sb.storage.from("photos").getPublicUrl(path).data.publicUrl)}
+    const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:f.get("desc").trim(),price:+f.get("price"),category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url:urls[0]||null,photos:urls}).select("id").single();
     if(ins.error)throw ins.error;
     const ct=await sb.from("listing_contacts").insert({listing_id:ins.data.id,phone:f.get("tel").trim()});
     if(ct.error)throw ct.error;
-    e.target.reset();$("post").close();load();
+    e.target.reset();pics=[];drawThumbs();$("post").close();load();
   }catch(err){msg.textContent="Erreur : "+(err.message||err)}
   btn.disabled=false;
 });
