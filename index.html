@@ -46,6 +46,8 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 .note{font-size:.82rem;color:var(--muted)}
 .msg{font-size:.88rem;color:var(--accent);min-height:1.2em}
 .thumbs{display:flex;gap:8px;flex-wrap:wrap}.th{position:relative;width:72px;height:72px;border-radius:8px;background:var(--line) center/cover;border:0;padding:0;cursor:pointer}.th span{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:14px;line-height:22px;text-align:center}.addph{text-align:center;cursor:pointer;display:block}.lbl{font-size:.88rem;color:var(--muted)}.field{display:grid;gap:8px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-top:14px;padding-bottom:2px}.tabs button{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 14px;white-space:nowrap;cursor:pointer}.tabs button.on{background:var(--pine);color:var(--head-ink);border-color:var(--pine)}
+.card{position:relative}.heart{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);color:#8e2a3b;display:grid;place-items:center;font-size:1.2rem;z-index:1}
 .empty{padding:40px 0;text-align:center;color:var(--muted)}
 .tel{font-size:1.3rem;font-weight:800}
 footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:center}
@@ -58,10 +60,12 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 </div></header>
 
 <main class="wrap">
+  <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button></nav>
   <div class="filters">
     <input class="search" id="q" type="search" placeholder="Pièce, disque, figurine, carte…" aria-label="Recherche">
     <select id="cat" aria-label="Catégorie"></select>
     <select id="dep" aria-label="Département"></select>
+    <select id="etat" aria-label="État" style="grid-column:1/-1"></select>
     <input id="max" type="number" min="0" placeholder="Prix max (€)" aria-label="Prix maximum">
     <select id="sort" aria-label="Tri"><option value="new">Plus récentes</option><option value="asc">Prix croissant</option><option value="desc">Prix décroissant</option></select>
   </div>
@@ -75,6 +79,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 
 <dialog id="auth"><form class="dl form" id="authForm" method="dialog">
   <h2 id="authTitle">Connexion</h2>
+  <label id="pseudoLbl" hidden>Pseudo (visible sur vos annonces)<input name="pseudo" maxlength="20"></label>
   <label>Email<input name="email" type="email" required autocomplete="email"></label>
   <label>Mot de passe (6 caractères minimum)<input name="pw" type="password" required minlength="6" autocomplete="current-password"></label>
   <div class="msg" id="authMsg" role="alert"></div>
@@ -109,9 +114,9 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const eur=n=>Number(n).toLocaleString("fr-FR")+" €";
 const opts=(o,all)=>(all?`<option value="">${all}</option>`:"")+Object.entries(o).map(([k,v])=>`<option value="${esc(k)}">${esc(k.length<4&&isNaN(k)?k+" ":k+" – ")}${esc(v)}</option>`).join("");
 $("cat").innerHTML=opts(CATS,"Toutes les catégories");$("dep").innerHTML=opts(DEPS,"Toute la Nouvelle-Aquitaine");
-$("fcat").innerHTML=opts(CATS);$("fdep").innerHTML=opts(DEPS);$("fetat").innerHTML=ETATS.map(e=>`<option>${e}</option>`).join("");
+$("fcat").innerHTML=opts(CATS);$("fdep").innerHTML=opts(DEPS);$("fetat").innerHTML=ETATS.map(e=>`<option>${e}</option>`).join("");$("etat").innerHTML='<option value="">Tous les états</option>'+ETATS.map(e=>`<option>${e}</option>`).join("");
 
-let ads=[],user=null,signup=false;
+let ads=[],user=null,signup=false,favs=new Set(),follows=new Set(),tab="all";
 const day=864e5,when=a=>new Date(a.boosted_at||a.created_at).getTime();
 const ago=a=>{const d=Math.floor((Date.now()-when(a))/day);return d<1?"Aujourd’hui":d===1?"Hier":"Il y a "+d+" jours"};
 
@@ -121,17 +126,17 @@ async function load(){
   ads=data;render();
 }
 function render(){
-  const q=$("q").value.toLowerCase().trim(),c=$("cat").value,d=$("dep").value,m=parseFloat($("max").value),s=$("sort").value;
-  const list=ads.filter(a=>(!q||(a.title+" "+a.description+" "+a.city).toLowerCase().includes(q))&&(!c||a.category===c)&&(!d||String(a.dept)===d)&&(isNaN(m)||a.price<=m));
+  const q=$("q").value.toLowerCase().trim(),c=$("cat").value,d=$("dep").value,m=parseFloat($("max").value),s=$("sort").value,et=$("etat").value;
+  const list=ads.filter(a=>(!q||(a.title+" "+a.description+" "+a.city).toLowerCase().includes(q))&&(!c||a.category===c)&&(!d||String(a.dept)===d)&&(isNaN(m)||a.price<=m)&&(!et||a.etat===et)&&tabOk(a));
   list.sort((a,b)=>s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:when(b)-when(a));
   $("count").textContent=list.length+(list.length>1?" annonces":" annonce");
-  $("grid").innerHTML=list.length?list.map(a=>`<button class="card" data-id="${esc(a.id)}">
+  $("grid").innerHTML=list.length?list.map(a=>`<button class="card" data-id="${esc(a.id)}"><span class="heart" data-fav="${esc(a.id)}" role="button" aria-label="Favori">${favs.has(a.id)?"♥":"♡"}</span>
     <div class="ph" style="${a.photo_url?`background-image:url('${esc(a.photo_url)}')`:''}">${a.photo_url?"":esc(a.category)}</div>
     <div class="b">${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price">${eur(a.price)}</div>
-    <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):'<div class="empty">Aucune annonce ne correspond. Soyez le premier à déposer la vôtre.</div>';
+    <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):'<div class="empty">${emptyMsg()}</div>';
 }
-["q","cat","dep","max","sort"].forEach(id=>$(id).addEventListener("input",render));
-$("grid").addEventListener("click",e=>{const b=e.target.closest(".card");if(b)openDetail(b.dataset.id)});
+["q","cat","dep","etat","max","sort"].forEach(id=>$(id).addEventListener("input",render));
+$("grid").addEventListener("click",e=>{const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b)openDetail(b.dataset.id)});
 
 function openDetail(id){
   const a=ads.find(x=>x.id===id);if(!a)return;
@@ -141,9 +146,10 @@ function openDetail(id){
   <h2>${esc(a.title)}</h2><div class="price">${eur(a.price)}</div>
   <div class="meta">${esc(CATS[a.category]||"")} · ${esc(a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
   <p>${esc(a.description)}</p>
+  <div class="meta">Vendeur : <b>${esc(a.seller_name||"Particulier")}</b></div>
   <div id="tel"><button class="btn" id="showTel">Voir le numéro</button></div>
-  <p class="note">Demandez des photos détaillées et vérifiez l’authenticité avant d’acheter. Rencontre en main propre, dans un lieu public, sans livraison. Ne payez jamais à l’avance.</p>
-  <div class="row">${mine?'<button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="close">Fermer</button></div>`;
+  <p class="note">Demandez des photos détaillées et vérifiez l’authenticité avant d’acheter. Vente en main propre uniquement.</p>
+  <div class="row"><button class="btn alt" id="fav">${favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"}</button>${mine?'<button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="follow">'+(follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur")+'</button><button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="close">Fermer</button></div>`;
   document.querySelectorAll("#detailBody .th").forEach(t=>t.onclick=()=>{$("mainPh").style.backgroundImage="url('"+t.dataset.u+"')"});
   $("showTel").onclick=async()=>{
     if(!user){$("detail").close();openAuth("Connectez-vous pour voir le numéro.");return}
@@ -161,15 +167,42 @@ function openDetail(id){
     alert(error?error.message:"Merci, l’annonce a été signalée.");
   };
   $("close").onclick=()=>$("detail").close();
+  $("fav").onclick=async()=>{await toggleFav(id);$("fav").textContent=favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"};
+  if($("follow"))$("follow").onclick=async()=>{await toggleFollow(a.user_id);$("follow").textContent=follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur"};
   $("detail").showModal();
 }
 
+/* Favoris, suivis, onglets */
+async function toggleFav(id){
+  if(!user){$("detail").close();openAuth("Connectez-vous pour ajouter des favoris.");return}
+  if(favs.has(id)){favs.delete(id);render();await sb.from("favorites").delete().eq("listing_id",id)}
+  else{favs.add(id);render();const {error}=await sb.from("favorites").insert({listing_id:id});if(error){favs.delete(id);render()}}
+}
+async function toggleFollow(sid){
+  if(!user){$("detail").close();openAuth("Connectez-vous pour suivre un vendeur.");return}
+  if(follows.has(sid)){follows.delete(sid);render();await sb.from("follows").delete().eq("seller_id",sid)}
+  else{follows.add(sid);render();const {error}=await sb.from("follows").insert({seller_id:sid});if(error){follows.delete(sid);render()}}
+}
+async function loadMine(){
+  favs=new Set();follows=new Set();
+  if(user){const [f,w]=await Promise.all([sb.from("favorites").select("listing_id"),sb.from("follows").select("seller_id")]);
+    (f.data||[]).forEach(r=>favs.add(r.listing_id));(w.data||[]).forEach(r=>follows.add(r.seller_id))}
+  else if(tab!=="all"){tab="all";syncTabs()}
+  render();
+}
+function syncTabs(){document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab))}
+$("tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.t!=="all"&&!user){openAuth("Connectez-vous pour accéder à cette rubrique.");return}
+  tab=b.dataset.t;syncTabs();render()});
+function tabOk(a){return tab==="all"||(tab==="fav"&&favs.has(a.id))||(tab==="follow"&&follows.has(a.user_id))||(tab==="mine"&&user&&a.user_id===user.id)}
+function emptyMsg(){return {fav:"Aucun favori pour l’instant. Touchez le cœur d’une annonce pour la retrouver ici.",follow:"Vous ne suivez encore personne. Ouvrez une annonce et touchez « Suivre ce vendeur ».",mine:"Vous n’avez pas encore d’annonce. Touchez « Déposer une annonce ».",all:"Aucune annonce ne correspond. Soyez le premier à déposer la vôtre."}[tab]}
+
 /* Auth */
-function setUser(u){user=u;$("authBtn").textContent=u?"Déconnexion":"Connexion"}
+function setUser(u){user=u;$("authBtn").textContent=u?"Déconnexion":"Connexion";loadMine()}
 sb.auth.onAuthStateChange((_e,s)=>setUser(s?s.user:null));
 sb.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
 function openAuth(msg){signup=false;syncAuth();$("authMsg").textContent=msg||"";$("auth").showModal()}
-function syncAuth(){$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
+function syncAuth(){$("pseudoLbl").hidden=!signup;document.querySelector("#pseudoLbl input").required=signup;$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
 $("authBtn").onclick=async()=>{if(user){await sb.auth.signOut()}else openAuth("")};
 $("authSwitch").onclick=()=>{signup=!signup;syncAuth();$("authMsg").textContent=""};
 $("authCancel").onclick=()=>$("auth").close();
@@ -177,7 +210,7 @@ $("authForm").addEventListener("submit",async e=>{
   e.preventDefault();const f=new FormData(e.target),email=f.get("email"),password=f.get("pw");
   $("authMsg").textContent="…";
   if(signup){
-    const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.href.split("#")[0]}});
+    const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.href.split("#")[0],data:{pseudo:(f.get("pseudo")||"").trim().slice(0,20)}}});
     if(error){$("authMsg").textContent=error.message;return}
     if(!data.session){$("authMsg").textContent="Compte créé. Vérifiez votre email pour confirmer, puis connectez-vous.";return}
   }else{
@@ -200,11 +233,13 @@ $("form").addEventListener("submit",async e=>{
   const f=new FormData(e.target),btn=$("postGo"),msg=$("postMsg");
   btn.disabled=true;msg.textContent="Publication…";
   try{
+    let pseudo=(user.user_metadata&&user.user_metadata.pseudo)||"";
+    if(!pseudo){pseudo=(prompt("Choisissez un pseudo visible sur vos annonces (ne mettez pas votre vrai nom)")||"").trim().slice(0,20);if(pseudo)await sb.auth.updateUser({data:{pseudo}})}
     const urls=[];
     for(const p of pics){const path=`${user.id}/${crypto.randomUUID()}.jpg`;
       const up=await sb.storage.from("photos").upload(path,p.b,{contentType:"image/jpeg"});
       if(up.error)throw up.error;urls.push(sb.storage.from("photos").getPublicUrl(path).data.publicUrl)}
-    const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:f.get("desc").trim(),price:+f.get("price"),category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url:urls[0]||null,photos:urls}).select("id").single();
+    const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:f.get("desc").trim(),price:+f.get("price"),category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url:urls[0]||null,photos:urls,seller_name:pseudo||null}).select("id").single();
     if(ins.error)throw ins.error;
     const ct=await sb.from("listing_contacts").insert({listing_id:ins.data.id,phone:f.get("tel").trim()});
     if(ct.error)throw ct.error;
