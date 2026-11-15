@@ -60,7 +60,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 </div></header>
 
 <main class="wrap">
-  <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button></nav>
+  <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button><button data-t="msg">Messages</button></nav>
   <div class="filters">
     <input class="search" id="q" type="search" placeholder="Pièce, disque, figurine, carte…" aria-label="Recherche">
     <select id="cat" aria-label="Catégorie"></select>
@@ -76,6 +76,17 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 <footer>Site réservé aux particuliers. Vente en main propre uniquement.<br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a></footer>
 
 <dialog id="detail"><div class="dl" id="detailBody"></div></dialog>
+
+<dialog id="contact"><form class="dl form" id="contactForm" method="dialog">
+  <h2>Écrire au vendeur</h2>
+  <label>Votre prénom<input name="name" required maxlength="40"></label>
+  <label>Votre email (le vendeur vous répondra dessus)<input name="email" type="email" required maxlength="120"></label>
+  <label>Message<textarea name="body" rows="4" required minlength="5" maxlength="1000"></textarea></label>
+  <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+  <p class="note">Votre email est transmis au vendeur uniquement pour qu’il puisse vous répondre. Aucune inscription nécessaire.</p>
+  <div class="msg" id="contactMsg" role="alert"></div>
+  <div class="row"><button class="btn" type="submit" id="contactGo">Envoyer</button><button class="btn alt" type="button" id="contactCancel">Annuler</button></div>
+</form></dialog>
 
 <dialog id="auth"><form class="dl form" id="authForm" method="dialog">
   <h2 id="authTitle">Connexion</h2>
@@ -117,7 +128,7 @@ const opts=(o,all)=>(all?`<option value="">${all}</option>`:"")+Object.entries(o
 $("cat").innerHTML=opts(CATS,"Toutes les catégories");$("dep").innerHTML=opts(DEPS,"Toute la Nouvelle-Aquitaine");
 $("fcat").innerHTML=opts(CATS);$("fdep").innerHTML=opts(DEPS);$("fetat").innerHTML=ETATS.map(e=>`<option>${e}</option>`).join("");$("etat").innerHTML='<option value="">Tous les états</option>'+ETATS.map(e=>`<option>${e}</option>`).join("");
 
-let ads=[],user=null,signup=false,favs=new Set(),follows=new Set(),tab="all";
+let ads=[],user=null,signup=false,favs=new Set(),follows=new Set(),msgs=[],tab="all";
 const day=864e5,when=a=>new Date(a.boosted_at||a.created_at).getTime();
 const ago=a=>{const d=Math.floor((Date.now()-when(a))/day);return d<1?"Aujourd’hui":d===1?"Hier":"Il y a "+d+" jours"};
 
@@ -127,6 +138,7 @@ async function load(){
   ads=data;render();
 }
 function render(){
+  if(tab==="msg")return renderMsgs();
   const q=$("q").value.toLowerCase().trim(),c=$("cat").value,d=$("dep").value,m=parseFloat($("max").value),s=$("sort").value,et=$("etat").value;
   const list=ads.filter(a=>(!q||(a.title+" "+a.description+" "+a.city).toLowerCase().includes(q))&&(!c||a.category===c)&&(!d||String(a.dept)===d)&&(isNaN(m)||a.price<=m)&&(!et||a.etat===et)&&tabOk(a));
   list.sort((a,b)=>s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:when(b)-when(a));
@@ -137,7 +149,7 @@ function render(){
     <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):'<div class="empty">${emptyMsg()}</div>';
 }
 ["q","cat","dep","etat","max","sort"].forEach(id=>$(id).addEventListener("input",render));
-$("grid").addEventListener("click",e=>{const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b)openDetail(b.dataset.id)});
+$("grid").addEventListener("click",async e=>{const dm=e.target.closest("[data-delmsg]");if(dm){if(!confirm("Supprimer ce message ?"))return;const {error}=await sb.from("messages").delete().eq("id",dm.dataset.delmsg);if(!error){msgs=msgs.filter(m=>m.id!==dm.dataset.delmsg);document.querySelector('#tabs [data-t="msg"]').textContent="Messages"+(msgs.length?" ("+msgs.length+")":"");renderMsgs()}return}const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b)openDetail(b.dataset.id)});
 
 function openDetail(id){
   const a=ads.find(x=>x.id===id);if(!a)return;
@@ -148,12 +160,13 @@ function openDetail(id){
   <div class="meta">${esc(CATS[a.category]||"")} · ${esc(a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
   <p>${esc(a.description)}</p>
   <div class="meta">Vendeur : <b>${esc(a.seller_name||"Particulier")}</b></div>
-  <div id="tel"><button class="btn" id="showTel">Voir le numéro</button></div>
+  <div id="tel" class="row">${mine?"":'<button class="btn" id="contactBtn">✉ Contacter le vendeur</button>'}<button class="btn alt" id="showTel">Voir le numéro</button></div>
   <p class="note">Demandez des photos détaillées et vérifiez l’authenticité avant d’acheter. Vente en main propre uniquement.</p>
   <div class="row"><button class="btn alt" id="fav">${favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"}</button>${mine?'<button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="follow">'+(follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur")+'</button><button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="close">Fermer</button></div>`;
   document.querySelectorAll("#detailBody .th").forEach(t=>t.onclick=()=>{$("mainPh").style.backgroundImage="url('"+t.dataset.u+"')"});
+  if($("contactBtn"))$("contactBtn").onclick=()=>openContact(a);
   $("showTel").onclick=async()=>{
-    if(!user){$("detail").close();openAuth("Connectez-vous pour voir le numéro.");return}
+    if(!user){$("detail").close();openAuth("Connectez-vous pour voir le numéro de téléphone.");return}
     const {data,error}=await sb.from("listing_contacts").select("phone").eq("listing_id",id).maybeSingle();
     const p=data&&data.phone;
     $("tel").innerHTML=p?`<a class="tel" href="tel:${esc(p.replace(/[^0-9+]/g,''))}">${esc(p)}</a>`:`<span class="note">Numéro indisponible.</span>`;
@@ -173,6 +186,24 @@ function openDetail(id){
   $("detail").showModal();
 }
 
+/* Messagerie */
+function renderMsgs(){
+  $("count").textContent=msgs.length+(msgs.length>1?" messages reçus":" message reçu");
+  const title=id=>{const a=ads.find(x=>x.id===id);return a?a.title:"Annonce supprimée"};
+  $("grid").innerHTML=msgs.length?`<div style="grid-column:1/-1;display:grid;gap:10px">`+msgs.map(m=>`<div class="card" style="cursor:default;padding:12px"><div class="meta">${esc(title(m.listing_id))} · ${new Date(m.created_at).toLocaleDateString("fr-FR")}</div><h3>${esc(m.sender_name)}</h3><p style="margin:6px 0">${esc(m.body)}</p><div class="row"><a class="btn" style="text-decoration:none" href="mailto:${esc(m.sender_email)}?subject=${encodeURIComponent("Re : "+title(m.listing_id))}">Répondre par email</a><button class="btn alt" data-delmsg="${esc(m.id)}">Supprimer</button></div></div>`).join("")+`</div>`:'<div class="empty">Aucun message. Quand un acheteur vous écrit, il apparaît ici.</div>';
+}
+let contactAd=null;
+function openContact(a){contactAd=a;$("contactMsg").textContent="";$("detail").close();$("contact").showModal()}
+$("contactCancel").onclick=()=>$("contact").close();
+$("contactForm").addEventListener("submit",async e=>{
+  e.preventDefault();const f=new FormData(e.target);if(f.get("website"))return;
+  const btn=$("contactGo");btn.disabled=true;$("contactMsg").textContent="Envoi…";
+  const {error}=await sb.from("messages").insert({listing_id:contactAd.id,sender_name:f.get("name").trim(),sender_email:f.get("email").trim(),body:f.get("body").trim()});
+  btn.disabled=false;
+  if(error){$("contactMsg").textContent=error.message.includes("Trop")?error.message:"Envoi impossible, réessayez plus tard.";return}
+  e.target.reset();$("contact").close();alert("Message envoyé. Le vendeur vous répondra par email.");
+});
+
 /* Favoris, suivis, onglets */
 async function toggleFav(id){
   if(!user){$("detail").close();openAuth("Connectez-vous pour ajouter des favoris.");return}
@@ -185,10 +216,11 @@ async function toggleFollow(sid){
   else{follows.add(sid);render();const {error}=await sb.from("follows").insert({seller_id:sid});if(error){follows.delete(sid);render()}}
 }
 async function loadMine(){
-  favs=new Set();follows=new Set();
+  favs=new Set();follows=new Set();msgs=[];
   if(user){const [f,w]=await Promise.all([sb.from("favorites").select("listing_id"),sb.from("follows").select("seller_id")]);
-    (f.data||[]).forEach(r=>favs.add(r.listing_id));(w.data||[]).forEach(r=>follows.add(r.seller_id))}
+    (f.data||[]).forEach(r=>favs.add(r.listing_id));(w.data||[]).forEach(r=>follows.add(r.seller_id));const m=await sb.from("messages").select("*").order("created_at",{ascending:false});msgs=m.data||[]}
   else if(tab!=="all"){tab="all";syncTabs()}
+  document.querySelector('#tabs [data-t="msg"]').textContent="Messages"+(msgs.length?" ("+msgs.length+")":"");
   render();
 }
 function syncTabs(){document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab))}
