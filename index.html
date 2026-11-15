@@ -50,7 +50,7 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 .card{position:relative}.heart{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);color:#8e2a3b;display:grid;place-items:center;font-size:1.2rem;z-index:1}
 .empty{padding:40px 0;text-align:center;color:var(--muted)}
 .tel{font-size:1.3rem;font-weight:800}
-footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:center}
+footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:center}footer a{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -73,7 +73,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <p class="count" id="count">Chargement…</p>
   <div class="grid" id="grid"></div>
 </main>
-<footer>Site réservé aux particuliers. Pas de livraison : rencontre en main propre.</footer>
+<footer>Site réservé aux particuliers. Vente en main propre uniquement.<br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a></footer>
 
 <dialog id="detail"><div class="dl" id="detailBody"></div></dialog>
 
@@ -82,6 +82,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <label id="pseudoLbl" hidden>Pseudo (visible sur vos annonces)<input name="pseudo" maxlength="20"></label>
   <label>Email<input name="email" type="email" required autocomplete="email"></label>
   <label>Mot de passe (6 caractères minimum)<input name="pw" type="password" required minlength="6" autocomplete="current-password"></label>
+  <label id="cguLbl" hidden style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" name="cgu" style="width:auto;margin-top:4px"><span>J’ai 18 ans ou plus et j’accepte les <a href="legal.html#cgu" target="_blank">CGU</a> et la <a href="legal.html#confidentialite" target="_blank">politique de confidentialité</a>.</span></label>
   <div class="msg" id="authMsg" role="alert"></div>
   <div class="row"><button class="btn" type="submit" id="authGo">Se connecter</button><button class="btn alt" type="button" id="authSwitch">Créer un compte</button><button class="btn alt" type="button" id="authCancel">Annuler</button></div>
 </form></dialog>
@@ -202,7 +203,7 @@ function setUser(u){user=u;$("authBtn").textContent=u?"Déconnexion":"Connexion"
 sb.auth.onAuthStateChange((_e,s)=>setUser(s?s.user:null));
 sb.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
 function openAuth(msg){signup=false;syncAuth();$("authMsg").textContent=msg||"";$("auth").showModal()}
-function syncAuth(){$("pseudoLbl").hidden=!signup;document.querySelector("#pseudoLbl input").required=signup;$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
+function syncAuth(){$("cguLbl").hidden=!signup;document.querySelector("#cguLbl input").required=signup;$("pseudoLbl").hidden=!signup;document.querySelector("#pseudoLbl input").required=signup;$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
 $("authBtn").onclick=async()=>{if(user){await sb.auth.signOut()}else openAuth("")};
 $("authSwitch").onclick=()=>{signup=!signup;syncAuth();$("authMsg").textContent=""};
 $("authCancel").onclick=()=>$("auth").close();
