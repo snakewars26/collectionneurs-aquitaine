@@ -8,9 +8,10 @@
 <meta name="theme-color" content="#1f4a40">
 <meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:site_name" content="Collectionneurs d’Aquitaine">
 <meta property="og:title" content="Collectionneurs d’Aquitaine – vendre, échanger, donner"><meta property="og:description" content="Petites annonces d’objets de collection entre particuliers en Nouvelle-Aquitaine : vente, échange et don.">
-<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://snakewars26.github.io/collectionneurs-aquitaine/">
+<meta property="og:url" content="https://snakewars26.github.io/collectionneurs-aquitaine/"><meta property="og:image" content="https://snakewars26.github.io/collectionneurs-aquitaine/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://snakewars26.github.io/collectionneurs-aquitaine/og-image.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🪙%3C/text%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
 :root{--bg:#eef3f1;--surface:#fff;--ink:#16302b;--muted:#5d716c;--line:#d3dedb;--accent:#8e2a3b;--accent-ink:#fff;--pine:#1f4a40;--head-ink:#fff}
@@ -81,7 +82,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <p class="count" id="count">Chargement…</p>
   <div class="grid" id="grid"></div>
 </main>
-<footer>Site réservé aux particuliers. Vente, échange et don en main propre uniquement.<br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a></footer>
+<footer>Site réservé aux particuliers. Vente, échange et don en main propre uniquement.<br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a><span id="delWrap"> · <a href="#" id="delAcc" hidden>Supprimer mon compte</a></span></footer>
 
 <dialog id="detail"><div class="dl" id="detailBody"></div></dialog>
 
@@ -103,12 +104,19 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <label>Mot de passe (8 caractères minimum à l’inscription)<input name="pw" type="password" required minlength="6" autocomplete="current-password"></label>
   <label id="cguLbl" hidden style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" name="cgu" style="width:auto;margin-top:4px"><span>J’ai 18 ans ou plus et j’accepte les <a href="legal.html#cgu" target="_blank">CGU</a> et la <a href="legal.html#confidentialite" target="_blank">politique de confidentialité</a>.</span></label>
   <div class="msg" id="authMsg" role="alert"></div>
-  <div class="row"><button class="btn" type="submit" id="authGo">Se connecter</button><button class="btn alt" type="button" id="authSwitch">Créer un compte</button><button class="btn alt" type="button" id="authCancel">Annuler</button></div>
+  <div class="row"><button class="btn" type="submit" id="authGo">Se connecter</button><button class="btn alt" type="button" id="authSwitch">Créer un compte</button><button class="btn alt" type="button" id="authForgot">Mot de passe oublié</button><button class="btn alt" type="button" id="authCancel">Annuler</button></div>
+</form></dialog>
+
+<dialog id="recover"><form class="dl form" id="recoverForm" method="dialog">
+  <h2>Nouveau mot de passe</h2>
+  <label>Nouveau mot de passe (8 caractères minimum)<input name="pw" type="password" required minlength="8" autocomplete="new-password"></label>
+  <div class="msg" id="recoverMsg" role="alert"></div>
+  <div class="row"><button class="btn" type="submit">Enregistrer</button></div>
 </form></dialog>
 
 <dialog id="post"><form class="dl form" id="form" method="dialog">
-  <h2>Déposer une annonce</h2>
-  <label>Type d’annonce<select name="kind" id="fkind"><option value="vente">Vente</option><option value="echange">Échange</option><option value="don">Don (gratuit)</option></select></label>
+  <h2 id="postTitle">Déposer une annonce</h2>
+  <label id="kindLbl">Type d’annonce<select name="kind" id="fkind"><option value="vente">Vente</option><option value="echange">Échange</option><option value="don">Don (gratuit)</option></select></label>
   <label>Titre<input name="title" required minlength="3" maxlength="70"></label>
   <div class="row"><label style="flex:1" id="priceLbl">Prix (€)<input name="price" id="fprice" type="number" min="0" required></label>
   <label style="flex:1">Catégorie<select name="cat" id="fcat"></select></label></div>
@@ -117,8 +125,8 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <label>État de l’objet<select name="etat" id="fetat"></select></label>
   <label id="wantLbl" hidden>Je cherche en échange<input name="want" id="fwant" maxlength="100" placeholder="Ex. : pièces de 2 € commémoratives, 45 tours des années 60…"></label>
   <label>Description<textarea name="desc" rows="3" maxlength="600" required></textarea></label>
-  <label>Téléphone (visible seulement par les membres connectés)<input name="tel" type="tel" required pattern="[0-9 +.]{10,16}"></label>
-  <div class="field"><span class="lbl">Photos (6 maximum, la première sera la photo principale)</span><div class="thumbs" id="thumbs"></div><label class="btn alt addph" id="addLbl">+ Ajouter des photos<input type="file" accept="image/*" multiple id="photo" hidden></label></div>
+  <label id="telLbl">Téléphone (visible seulement par les membres connectés)<input name="tel" type="tel" required pattern="[0-9 +.]{10,16}"></label>
+  <div class="field" id="photoField"><span class="lbl">Photos (6 maximum, la première sera la photo principale)</span><div class="thumbs" id="thumbs"></div><label class="btn alt addph" id="addLbl">+ Ajouter des photos<input type="file" accept="image/*" multiple id="photo" hidden></label></div>
   <label class="row" style="align-items:center;flex-wrap:nowrap"><input type="checkbox" name="part" required style="width:auto"> Je certifie être un particulier et non un professionnel.</label>
   <div class="msg" id="postMsg" role="alert"></div>
   <div class="row"><button class="btn" type="submit" id="postGo">Publier</button><button class="btn alt" type="button" id="cancel">Annuler</button></div>
@@ -144,6 +152,7 @@ $("fcat").innerHTML=opts(CATS);$("fdep").innerHTML=opts(DEPS);$("fetat").innerHT
 let ads=[],user=null,signup=false,favs=new Set(),follows=new Set(),msgs=[],tab="all";
 const KINDS={vente:"Vente",echange:"Échange",don:"Don"};
 const kindOf=a=>a.kind||"vente";
+const doneTxt=a=>({vente:"Vendu",echange:"Échangé",don:"Donné"})[kindOf(a)];
 const priceTxt=a=>kindOf(a)==="don"?"Gratuit":kindOf(a)==="echange"?"Échange":eur(a.price);
 const day=864e5,when=a=>new Date(a.boosted_at||a.created_at).getTime();
 const ago=a=>{const d=Math.floor((Date.now()-when(a))/day);return d<1?"Aujourd’hui":d===1?"Hier":"Il y a "+d+" jours"};
@@ -161,7 +170,7 @@ function render(){
   $("count").textContent=list.length+(list.length>1?" annonces":" annonce");
   $("grid").innerHTML=list.length?list.map(a=>`<button class="card" data-id="${esc(a.id)}"><span class="heart" data-fav="${esc(a.id)}" role="button" aria-label="Favori">${favs.has(a.id)?"♥":"♡"}</span>
     <div class="ph">${safeUrl(a.photo_url)?`<img src="${esc(safeUrl(a.photo_url))}" alt="${esc(a.title)}" loading="lazy" decoding="async">`:esc(a.category)}</div>
-    <div class="b">${kindOf(a)!=="vente"?`<span class="tag k">${esc(KINDS[kindOf(a)])}</span> `:''}${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
+    <div class="b">${a.sold?`<span class="tag" style="background:var(--muted)">${doneTxt(a)}</span> `:''}${kindOf(a)!=="vente"?`<span class="tag k">${esc(KINDS[kindOf(a)])}</span> `:''}${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
     <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
 }
 ["q","cat","dep","etat","max","sort"].forEach(id=>$(id).addEventListener("input",render));
@@ -172,13 +181,13 @@ function openDetail(id){
   const mine=user&&user.id===a.user_id;
   const ph=(a.photos&&a.photos.length?a.photos:(a.photo_url?[a.photo_url]:[])).map(safeUrl).filter(Boolean);
   $("detailBody").innerHTML=`<div class="ph" id="mainPh" style="${ph[0]?`background-image:url('${esc(ph[0])}')`:''}">${ph[0]?"":esc(a.category)}</div>${ph.length>1?`<div class="thumbs">${ph.map(u=>`<button type="button" class="th" data-u="${esc(u)}" style="background-image:url('${esc(u)}')" aria-label="Voir la photo"></button>`).join("")}</div>`:""}
-  <h2>${esc(a.title)}</h2><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
+  ${a.sold?`<span class="tag" style="background:var(--muted);justify-self:start">${doneTxt(a)}</span>`:""}<h2>${esc(a.title)}</h2><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
   <div class="meta">${esc(KINDS[kindOf(a)])} · ${esc(CATS[a.category]||"")} · ${esc(a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
   <p style="white-space:pre-line">${esc(a.description)}</p>
   <div class="meta">Vendeur : <b>${esc(a.seller_name||"Particulier")}</b></div>
-  <div id="tel" class="row">${mine?"":'<button class="btn" id="contactBtn">✉ Contacter l’annonceur</button>'}<button class="btn alt" id="showTel">Voir le numéro</button></div>
+  <div id="tel" class="row">${mine||a.sold?"":'<button class="btn" id="contactBtn">✉ Contacter l’annonceur</button>'}<button class="btn alt" id="showTel">Voir le numéro</button></div>
   <p class="note">Demandez des photos détaillées et vérifiez l’objet avant tout accord. Remise en main propre uniquement, sans paiement à l’avance.</p>
-  <div class="row"><button class="btn alt" id="fav">${favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"}</button>${mine?'<button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="follow">'+(follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur")+'</button><button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="share">↗ Partager</button><button class="btn alt" id="close">Fermer</button></div>`;
+  <div class="row"><button class="btn alt" id="fav">${favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"}</button>${mine?'<button class="btn alt" id="edit">Modifier</button><button class="btn alt" id="done">'+(a.sold?"Remettre en ligne":"Marquer comme "+doneTxt(a).toLowerCase())+'</button><button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="follow">'+(follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur")+'</button><button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="share">↗ Partager</button><button class="btn alt" id="close">Fermer</button></div>`;
   document.querySelectorAll("#detailBody .th").forEach(t=>t.onclick=()=>{$("mainPh").style.backgroundImage="url('"+t.dataset.u+"')"});
   if($("contactBtn"))$("contactBtn").onclick=()=>openContact(a);
   $("showTel").onclick=async()=>{
@@ -189,7 +198,9 @@ function openDetail(id){
   };
   if(mine){
     $("boost").onclick=async()=>{const {error}=await sb.from("listings").update({boosted_at:new Date().toISOString()}).eq("id",id);if(error)return alert(error.message);$("detail").close();load()};
-    $("del").onclick=async()=>{if(!confirm("Supprimer cette annonce ?"))return;const {error}=await sb.from("listings").delete().eq("id",id);if(error)return alert(error.message);$("detail").close();load()};
+    $("del").onclick=async()=>{if(!confirm("Supprimer cette annonce ?"))return;const paths=[...new Set([...(a.photos||[]),a.photo_url].filter(u=>safeUrl(u)).map(u=>decodeURIComponent(u.slice(PHOTO_BASE.length))))];const {error}=await sb.from("listings").delete().eq("id",id);if(error)return alert(error.message);if(paths.length)sb.storage.from("photos").remove(paths);$("detail").close();load()};
+    $("done").onclick=async()=>{const {error}=await sb.from("listings").update({sold:!a.sold}).eq("id",id);if(error)return alert(error.message);$("detail").close();load()};
+    $("edit").onclick=()=>startEdit(a);
   }else $("rep").onclick=async()=>{
     if(!user){$("detail").close();openAuth("Connectez-vous pour signaler une annonce.");return}
     const reason=prompt("Pourquoi signalez-vous cette annonce ? (professionnel, faux, arnaque…)");if(!reason)return;
@@ -247,15 +258,15 @@ function syncTabs(){document.querySelectorAll("#tabs button").forEach(b=>b.class
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   if(!["all","echange","don"].includes(b.dataset.t)&&!user){openAuth("Connectez-vous pour accéder à cette rubrique.");return}
   tab=b.dataset.t;syncTabs();render()});
-function tabOk(a){return tab==="all"||(tab==="fav"&&favs.has(a.id))||(tab==="follow"&&follows.has(a.user_id))||(tab==="mine"&&user&&a.user_id===user.id)||(tab==="echange"&&kindOf(a)==="echange")||(tab==="don"&&kindOf(a)==="don")}
+function tabOk(a){if(a.sold&&tab!=="mine")return false;return tab==="all"||(tab==="fav"&&favs.has(a.id))||(tab==="follow"&&follows.has(a.user_id))||(tab==="mine"&&user&&a.user_id===user.id)||(tab==="echange"&&kindOf(a)==="echange")||(tab==="don"&&kindOf(a)==="don")}
 function emptyMsg(){return {fav:"Aucun favori pour l’instant. Touchez le cœur d’une annonce pour la retrouver ici.",follow:"Vous ne suivez encore personne. Ouvrez une annonce et touchez « Suivre ce vendeur ».",mine:"Vous n’avez pas encore d’annonce. Touchez « Déposer une annonce ».",echange:"Aucun échange proposé pour l’instant. Déposez le premier !",don:"Aucun don pour l’instant. Vous avez des objets à donner ? Déposez une annonce.",all:"Aucune annonce ne correspond. Soyez le premier à déposer la vôtre."}[tab]}
 
 /* Auth */
-function setUser(u){user=u;$("authBtn").textContent=u?"Déconnexion":"Connexion";loadMine()}
-sb.auth.onAuthStateChange((_e,s)=>setUser(s?s.user:null));
+function setUser(u){user=u;$("delAcc").hidden=!u;$("authBtn").textContent=u?"Déconnexion":"Connexion";loadMine()}
+sb.auth.onAuthStateChange((e,s)=>{setUser(s?s.user:null);if(e==="PASSWORD_RECOVERY"){$("recoverMsg").textContent="";$("recover").showModal()}});
 sb.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
 function openAuth(msg){signup=false;syncAuth();$("authMsg").textContent=msg||"";$("auth").showModal()}
-function syncAuth(){document.querySelector("#authForm [name=pw]").minLength=signup?8:1;$("cguLbl").hidden=!signup;document.querySelector("#cguLbl input").required=signup;$("pseudoLbl").hidden=!signup;document.querySelector("#pseudoLbl input").required=signup;$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
+function syncAuth(){$("authForgot").hidden=signup;document.querySelector("#authForm [name=pw]").minLength=signup?8:1;$("cguLbl").hidden=!signup;document.querySelector("#cguLbl input").required=signup;$("pseudoLbl").hidden=!signup;document.querySelector("#pseudoLbl input").required=signup;$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
 $("authBtn").onclick=async()=>{if(user){await sb.auth.signOut()}else openAuth("")};
 $("authSwitch").onclick=()=>{signup=!signup;syncAuth();$("authMsg").textContent=""};
 $("authCancel").onclick=()=>$("auth").close();
@@ -273,12 +284,45 @@ $("authForm").addEventListener("submit",async e=>{
   e.target.reset();$("auth").close();
 });
 
+/* Mot de passe oublié, nouveau mot de passe, suppression de compte */
+$("authForgot").onclick=async()=>{
+  const email=document.querySelector("#authForm [name=email]").value.trim();
+  if(!email){$("authMsg").textContent="Entrez d’abord votre email ci-dessus.";return}
+  $("authMsg").textContent="…";
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.href.split("#")[0]});
+  $("authMsg").textContent=error?"Envoi impossible, réessayez dans quelques minutes.":"Si un compte existe avec cet email, un lien de réinitialisation vient d’être envoyé.";
+};
+$("recoverForm").addEventListener("submit",async e=>{
+  e.preventDefault();const pw=new FormData(e.target).get("pw");$("recoverMsg").textContent="…";
+  const {error}=await sb.auth.updateUser({password:pw});
+  if(error){$("recoverMsg").textContent=error.message;return}
+  e.target.reset();$("recover").close();alert("Mot de passe modifié.");
+});
+$("delAcc").onclick=async e=>{
+  e.preventDefault();if(!user)return;
+  if(!confirm("Supprimer définitivement votre compte, vos annonces et vos photos ? Cette action est irréversible."))return;
+  try{const {data:files}=await sb.storage.from("photos").list(user.id,{limit:200});if(files&&files.length)await sb.storage.from("photos").remove(files.map(f=>user.id+"/"+f.name))}catch(_){}
+  const {error}=await sb.rpc("delete_my_account");
+  if(error)return alert("Suppression impossible : "+error.message);
+  try{await sb.auth.signOut({scope:"local"})}catch(_){}
+  alert("Votre compte a été supprimé.");load();
+};
+
 /* Dépôt d'annonce */
 $("newBtn").onclick=()=>{if(!user)openAuth("Connectez-vous pour déposer une annonce.");else{$("postMsg").textContent="";syncKind();$("post").showModal()}};
-function syncKind(){const k=$("fkind").value;$("priceLbl").hidden=k!=="vente";$("fprice").required=k==="vente";$("wantLbl").hidden=k!=="echange"}
+function syncKind(){const k=$("fkind").value;$("priceLbl").hidden=k!=="vente";$("fprice").required=k==="vente";$("wantLbl").hidden=k!=="echange"||!!editing}
 $("fkind").addEventListener("change",syncKind);
 $("cancel").onclick=()=>$("post").close();
 function resize(file){return new Promise(res=>{if(!file)return res(null);const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,900/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=i.width*k;c.height=i.height*k;c.getContext("2d").drawImage(i,0,0,c.width,c.height);c.toBlob(b=>res(b),"image/jpeg",.75)};i.onerror=()=>res(null);i.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
+let editing=null;
+function startEdit(a){
+  editing=a.id;const fm=$("form").elements;
+  fm.kind.value=kindOf(a);fm.title.value=a.title;fm.price.value=a.price;fm.cat.value=a.category;fm.dep.value=a.dept;fm.city.value=a.city;fm.etat.value=a.etat;fm.desc.value=a.description;fm.part.checked=true;
+  $("kindLbl").hidden=true;$("telLbl").hidden=true;fm.tel.required=false;$("photoField").hidden=true;
+  $("postTitle").textContent="Modifier l’annonce";$("postGo").textContent="Enregistrer";$("postMsg").textContent="";
+  syncKind();$("detail").close();$("post").showModal();
+}
+$("post").addEventListener("close",()=>{if(!editing)return;editing=null;$("form").reset();$("kindLbl").hidden=false;$("telLbl").hidden=false;$("form").elements.tel.required=true;$("photoField").hidden=false;$("postTitle").textContent="Déposer une annonce";$("postGo").textContent="Publier";syncKind()});
 let pics=[];
 function drawThumbs(){$("thumbs").innerHTML=pics.map((p,i)=>`<div class="th" style="background-image:url('${p.u}')"><span data-i="${i}" role="button" aria-label="Retirer la photo">×</span></div>`).join("");$("addLbl").style.display=pics.length>=6?"none":""}
 $("photo").addEventListener("change",async e=>{for(const f of [...e.target.files]){if(pics.length>=6)break;const b=await resize(f);if(b)pics.push({b,u:URL.createObjectURL(b)})}e.target.value="";drawThumbs()});
@@ -288,6 +332,11 @@ $("form").addEventListener("submit",async e=>{
   const f=new FormData(e.target),btn=$("postGo"),msg=$("postMsg"),k=f.get("kind");
   btn.disabled=true;msg.textContent="Publication…";
   try{
+    if(editing){
+      const up=await sb.from("listings").update({title:f.get("title").trim(),description:f.get("desc").trim(),price:k==="vente"?+f.get("price"):0,category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim()}).eq("id",editing);
+      if(up.error)throw up.error;
+      $("post").close();btn.disabled=false;load();return;
+    }
     let pseudo=(user.user_metadata&&user.user_metadata.pseudo)||"";
     if(!pseudo){pseudo=(prompt("Choisissez un pseudo visible sur vos annonces (ne mettez pas votre vrai nom)")||"").trim().slice(0,20);if(pseudo)await sb.auth.updateUser({data:{pseudo}})}
     const urls=[];

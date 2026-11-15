@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://snakewars26.github.io/collectionneurs-aquitaine/sitemap.xml
