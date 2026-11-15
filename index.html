@@ -271,11 +271,12 @@ $("authBtn").onclick=async()=>{if(user){await sb.auth.signOut()}else openAuth(""
 $("authSwitch").onclick=()=>{signup=!signup;syncAuth();$("authMsg").textContent=""};
 $("authCancel").onclick=()=>$("auth").close();
 $("authForm").addEventListener("submit",async e=>{
-  e.preventDefault();const f=new FormData(e.target),email=f.get("email"),password=f.get("pw");
+  e.preventDefault();const f=new FormData(e.target),email=String(f.get("email")).trim().toLowerCase(),password=f.get("pw");
   $("authMsg").textContent="…";
   if(signup){
     const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.href.split("#")[0],data:{pseudo:(f.get("pseudo")||"").trim().slice(0,20)}}});
-    if(error){$("authMsg").textContent=error.message;return}
+    if(error){$("authMsg").textContent=/already registered/i.test(error.message)?"Un compte existe déjà avec cet email. Connectez-vous, ou utilisez « Mot de passe oublié ».":error.message;if(/already registered/i.test(error.message)){signup=false;syncAuth();$("authMsg").textContent="Un compte existe déjà avec cet email. Connectez-vous, ou utilisez « Mot de passe oublié »."}return}
+    if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){signup=false;syncAuth();$("authMsg").textContent="Un compte existe déjà avec cet email. Connectez-vous, ou utilisez « Mot de passe oublié ».";return}
     if(!data.session){$("authMsg").textContent="Compte créé. Vérifiez votre email pour confirmer, puis connectez-vous.";return}
   }else{
     const {error}=await sb.auth.signInWithPassword({email,password});
