@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Collectionneurs d’Aquitaine – objets de collection entre particuliers</title>
 <meta name="description" content="Petites annonces d’objets de collection entre particuliers en Nouvelle-Aquitaine : vente, échange et don.">
+<meta name="theme-color" content="#1f4a40">
+<meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:site_name" content="Collectionneurs d’Aquitaine">
+<meta property="og:title" content="Collectionneurs d’Aquitaine – vendre, échanger, donner"><meta property="og:description" content="Petites annonces d’objets de collection entre particuliers en Nouvelle-Aquitaine : vente, échange et don.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🪙%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
@@ -34,6 +39,7 @@ button,select,input,textarea{font:inherit;color:inherit}
 .ph{aspect-ratio:4/3;background:var(--line) center/cover;display:grid;place-items:center;font-size:2.4rem}
 .card .b{padding:10px 12px 12px}
 .card h3{font-size:1rem;font-weight:600}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
 .price{font-weight:800;color:var(--accent);margin-top:4px}
 .meta{color:var(--muted);font-size:.82rem;margin-top:2px}
 .tag{display:inline-block;background:var(--accent);color:var(--accent-ink);font-size:.72rem;padding:1px 8px;border-radius:99px;margin-bottom:4px}
@@ -94,7 +100,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <h2 id="authTitle">Connexion</h2>
   <label id="pseudoLbl" hidden>Pseudo (visible sur vos annonces)<input name="pseudo" maxlength="20"></label>
   <label>Email<input name="email" type="email" required autocomplete="email"></label>
-  <label>Mot de passe (6 caractères minimum)<input name="pw" type="password" required minlength="6" autocomplete="current-password"></label>
+  <label>Mot de passe (8 caractères minimum à l’inscription)<input name="pw" type="password" required minlength="6" autocomplete="current-password"></label>
   <label id="cguLbl" hidden style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" name="cgu" style="width:auto;margin-top:4px"><span>J’ai 18 ans ou plus et j’accepte les <a href="legal.html#cgu" target="_blank">CGU</a> et la <a href="legal.html#confidentialite" target="_blank">politique de confidentialité</a>.</span></label>
   <div class="msg" id="authMsg" role="alert"></div>
   <div class="row"><button class="btn" type="submit" id="authGo">Se connecter</button><button class="btn alt" type="button" id="authSwitch">Créer un compte</button><button class="btn alt" type="button" id="authCancel">Annuler</button></div>
@@ -127,6 +133,9 @@ const ETATS=["Neuf avec étiquette","Neuf sans étiquette","Très bon état","Bo
 const DEPS={16:"Charente",17:"Charente-Maritime",19:"Corrèze",23:"Creuse",24:"Dordogne",33:"Gironde",40:"Landes",47:"Lot-et-Garonne",64:"Pyrénées-Atlantiques",79:"Deux-Sèvres",86:"Vienne",87:"Haute-Vienne"};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const PHOTO_BASE=SUPABASE_URL+"/storage/v1/object/public/photos/";
+const safeUrl=u=>typeof u==="string"&&u.startsWith(PHOTO_BASE)&&!/['"()\s<>\\]/.test(u.slice(PHOTO_BASE.length))?u:"";
 const eur=n=>Number(n).toLocaleString("fr-FR")+" €";
 const opts=(o,all)=>(all?`<option value="">${all}</option>`:"")+Object.entries(o).map(([k,v])=>`<option value="${esc(k)}">${esc(k.length<4&&isNaN(k)?k+" ":k+" – ")}${esc(v)}</option>`).join("");
 $("cat").innerHTML=opts(CATS,"Toutes les catégories");$("dep").innerHTML=opts(DEPS,"Toute la Nouvelle-Aquitaine");
@@ -142,16 +151,16 @@ const ago=a=>{const d=Math.floor((Date.now()-when(a))/day);return d<1?"Aujourd�
 async function load(){
   const {data,error}=await sb.from("listings").select("*").order("created_at",{ascending:false}).limit(300);
   if(error){$("count").textContent="Erreur de chargement : "+error.message;return}
-  ads=data;render();
+  ads=data;render();openFromHash();
 }
 function render(){
   if(tab==="msg")return renderMsgs();
-  const q=$("q").value.toLowerCase().trim(),c=$("cat").value,d=$("dep").value,m=parseFloat($("max").value),s=$("sort").value,et=$("etat").value;
-  const list=ads.filter(a=>(!q||(a.title+" "+a.description+" "+a.city).toLowerCase().includes(q))&&(!c||a.category===c)&&(!d||String(a.dept)===d)&&(isNaN(m)||a.price<=m)&&(!et||a.etat===et)&&tabOk(a));
+  const q=norm($("q").value.trim()),c=$("cat").value,d=$("dep").value,m=parseFloat($("max").value),s=$("sort").value,et=$("etat").value;
+  const list=ads.filter(a=>(!q||norm(a.title+" "+a.description+" "+a.city).includes(q))&&(!c||a.category===c)&&(!d||String(a.dept)===d)&&(isNaN(m)||a.price<=m)&&(!et||a.etat===et)&&tabOk(a));
   list.sort((a,b)=>s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:when(b)-when(a));
   $("count").textContent=list.length+(list.length>1?" annonces":" annonce");
   $("grid").innerHTML=list.length?list.map(a=>`<button class="card" data-id="${esc(a.id)}"><span class="heart" data-fav="${esc(a.id)}" role="button" aria-label="Favori">${favs.has(a.id)?"♥":"♡"}</span>
-    <div class="ph" style="${a.photo_url?`background-image:url('${esc(a.photo_url)}')`:''}">${a.photo_url?"":esc(a.category)}</div>
+    <div class="ph">${safeUrl(a.photo_url)?`<img src="${esc(safeUrl(a.photo_url))}" alt="${esc(a.title)}" loading="lazy" decoding="async">`:esc(a.category)}</div>
     <div class="b">${kindOf(a)!=="vente"?`<span class="tag k">${esc(KINDS[kindOf(a)])}</span> `:''}${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
     <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
 }
@@ -161,15 +170,15 @@ $("grid").addEventListener("click",async e=>{const dm=e.target.closest("[data-de
 function openDetail(id){
   const a=ads.find(x=>x.id===id);if(!a)return;
   const mine=user&&user.id===a.user_id;
-  const ph=a.photos&&a.photos.length?a.photos:(a.photo_url?[a.photo_url]:[]);
+  const ph=(a.photos&&a.photos.length?a.photos:(a.photo_url?[a.photo_url]:[])).map(safeUrl).filter(Boolean);
   $("detailBody").innerHTML=`<div class="ph" id="mainPh" style="${ph[0]?`background-image:url('${esc(ph[0])}')`:''}">${ph[0]?"":esc(a.category)}</div>${ph.length>1?`<div class="thumbs">${ph.map(u=>`<button type="button" class="th" data-u="${esc(u)}" style="background-image:url('${esc(u)}')" aria-label="Voir la photo"></button>`).join("")}</div>`:""}
   <h2>${esc(a.title)}</h2><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
   <div class="meta">${esc(KINDS[kindOf(a)])} · ${esc(CATS[a.category]||"")} · ${esc(a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
-  <p>${esc(a.description)}</p>
+  <p style="white-space:pre-line">${esc(a.description)}</p>
   <div class="meta">Vendeur : <b>${esc(a.seller_name||"Particulier")}</b></div>
   <div id="tel" class="row">${mine?"":'<button class="btn" id="contactBtn">✉ Contacter l’annonceur</button>'}<button class="btn alt" id="showTel">Voir le numéro</button></div>
   <p class="note">Demandez des photos détaillées et vérifiez l’objet avant tout accord. Remise en main propre uniquement, sans paiement à l’avance.</p>
-  <div class="row"><button class="btn alt" id="fav">${favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"}</button>${mine?'<button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="follow">'+(follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur")+'</button><button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="close">Fermer</button></div>`;
+  <div class="row"><button class="btn alt" id="fav">${favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"}</button>${mine?'<button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="follow">'+(follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur")+'</button><button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="share">↗ Partager</button><button class="btn alt" id="close">Fermer</button></div>`;
   document.querySelectorAll("#detailBody .th").forEach(t=>t.onclick=()=>{$("mainPh").style.backgroundImage="url('"+t.dataset.u+"')"});
   if($("contactBtn"))$("contactBtn").onclick=()=>openContact(a);
   $("showTel").onclick=async()=>{
@@ -188,10 +197,14 @@ function openDetail(id){
     alert(error?error.message:"Merci, l’annonce a été signalée.");
   };
   $("close").onclick=()=>$("detail").close();
+  $("share").onclick=async()=>{const url=location.href.split("#")[0]+"#a-"+id;try{if(navigator.share){await navigator.share({title:a.title,url})}else{await navigator.clipboard.writeText(url);$("share").textContent="Lien copié ✓"}}catch(_){}};
   $("fav").onclick=async()=>{await toggleFav(id);$("fav").textContent=favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"};
   if($("follow"))$("follow").onclick=async()=>{await toggleFollow(a.user_id);$("follow").textContent=follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur"};
+  history.replaceState(null,"","#a-"+id);
   $("detail").showModal();
 }
+$("detail").addEventListener("close",()=>{if(location.hash.startsWith("#a-"))history.replaceState(null,"",location.pathname+location.search)});
+function openFromHash(){const m=location.hash.match(/^#a-([\w-]+)$/);if(!m||$("detail").open)return;const a=ads.find(x=>String(x.id)===m[1]);if(a)openDetail(a.id)}
 
 /* Messagerie */
 function renderMsgs(){
@@ -242,7 +255,7 @@ function setUser(u){user=u;$("authBtn").textContent=u?"Déconnexion":"Connexion"
 sb.auth.onAuthStateChange((_e,s)=>setUser(s?s.user:null));
 sb.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
 function openAuth(msg){signup=false;syncAuth();$("authMsg").textContent=msg||"";$("auth").showModal()}
-function syncAuth(){$("cguLbl").hidden=!signup;document.querySelector("#cguLbl input").required=signup;$("pseudoLbl").hidden=!signup;document.querySelector("#pseudoLbl input").required=signup;$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
+function syncAuth(){document.querySelector("#authForm [name=pw]").minLength=signup?8:1;$("cguLbl").hidden=!signup;document.querySelector("#cguLbl input").required=signup;$("pseudoLbl").hidden=!signup;document.querySelector("#pseudoLbl input").required=signup;$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
 $("authBtn").onclick=async()=>{if(user){await sb.auth.signOut()}else openAuth("")};
 $("authSwitch").onclick=()=>{signup=!signup;syncAuth();$("authMsg").textContent=""};
 $("authCancel").onclick=()=>$("auth").close();
@@ -284,7 +297,7 @@ $("form").addEventListener("submit",async e=>{
     const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:((k==="echange"&&f.get("want").trim()?"Échange souhaité : "+f.get("want").trim()+"\n":"")+f.get("desc").trim()).slice(0,700),kind:k,price:k==="vente"?+f.get("price"):0,category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url:urls[0]||null,photos:urls,seller_name:pseudo||null}).select("id").single();
     if(ins.error)throw ins.error;
     const ct=await sb.from("listing_contacts").insert({listing_id:ins.data.id,phone:f.get("tel").trim()});
-    if(ct.error)throw ct.error;
+    if(ct.error){await sb.from("listings").delete().eq("id",ins.data.id);throw ct.error}
     e.target.reset();syncKind();pics=[];drawThumbs();$("post").close();load();
   }catch(err){msg.textContent="Erreur : "+(err.message||err)}
   btn.disabled=false;
