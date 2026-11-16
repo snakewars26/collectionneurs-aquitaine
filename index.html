@@ -13,6 +13,9 @@
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://snakewars26.github.io/collectionneurs-aquitaine/og-image.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🪙%3C/text%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;600;800&display=swap">
+<meta property="og:image:alt" content="Collectionneurs d’Aquitaine : vendre, échanger ou donner des objets de collection"><meta name="twitter:title" content="Collectionneurs d’Aquitaine – vendre, échanger, donner">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Collectionneurs d’Aquitaine","url":"https://snakewars26.github.io/collectionneurs-aquitaine/","inLanguage":"fr-FR","description":"Petites annonces d’objets de collection entre particuliers en Nouvelle-Aquitaine : vente, échange et don."}</script>
 <style>
 :root{--bg:#eef3f1;--surface:#fff;--ink:#16302b;--muted:#5d716c;--line:#d3dedb;--accent:#8e2a3b;--accent-ink:#fff;--pine:#1f4a40;--head-ink:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#0f1f1c;--surface:#172b27;--ink:#e6efec;--muted:#9bb0aa;--line:#2b443e;--accent:#e0708a;--accent-ink:#1a0a0e;--pine:#1a3d35;--head-ink:#e6efec}}
@@ -60,6 +63,7 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 .empty{padding:40px 0;text-align:center;color:var(--muted)}
 .tel{font-size:1.3rem;font-weight:800}
 footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:center}footer a{color:var(--muted)}
+#toast{margin:0;border:0;padding:12px 18px;border-radius:12px;background:var(--ink);color:var(--bg);inset:auto auto calc(24px + env(safe-area-inset-bottom,0px)) 50%;transform:translateX(-50%);max-width:min(90vw,420px);font-size:.92rem;box-shadow:0 6px 24px rgba(0,0,0,.3)}
 </style>
 </head>
 <body>
@@ -69,6 +73,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 </div></header>
 
 <main class="wrap">
+  <noscript><p class="empty">Ce site a besoin de JavaScript pour afficher les annonces d’objets de collection (monnaies, timbres, cartes, figurines, vinyles, livres, montres, brocante) en Nouvelle-Aquitaine.</p></noscript>
   <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="echange">⇄ Échanges</button><button data-t="don">🎁 Dons</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button><button data-t="msg">Messages</button></nav>
   <div class="filters">
     <input class="search" id="q" type="search" placeholder="Pièce, disque, figurine, carte…" aria-label="Recherche">
@@ -78,24 +83,17 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
     <input id="max" type="number" min="0" placeholder="Prix max (€)" aria-label="Prix maximum">
     <select id="sort" aria-label="Tri"><option value="new">Plus récentes</option><option value="asc">Prix croissant</option><option value="desc">Prix décroissant</option></select>
   </div>
-  <div class="sponsor">Espace sponsor local : <b>votre brocante, salon ou boutique de collection ici</b></div>
+  <div class="sponsor" hidden>Espace sponsor local : <b>votre brocante, salon ou boutique de collection ici</b></div>
   <p class="count" id="count">Chargement…</p>
   <div class="grid" id="grid"></div>
 </main>
-<footer>Site réservé aux particuliers. Vente, échange et don en main propre uniquement.<br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a><span id="delWrap"> · <a href="#" id="delAcc" hidden>Supprimer mon compte</a></span></footer>
+<footer>Site réservé aux particuliers. Vente, échange et don en main propre uniquement.<br><a href="monnaies-medailles.html">Monnaies & médailles</a> · <a href="timbres-cartes-postales.html">Timbres & cartes postales</a> · <a href="cartes-a-collectionner.html">Cartes à collectionner</a> · <a href="jouets-figurines.html">Jouets & figurines</a> · <a href="vinyles-disques.html">Vinyles & disques</a> · <a href="livres-bd-anciennes.html">Livres & BD anciennes</a> · <a href="montres-horlogerie.html">Montres & horlogerie</a> · <a href="antiquites-brocante.html">Antiquités & brocante</a><br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a><span id="delWrap"> · <a href="#" id="delAcc" hidden>Supprimer mon compte</a></span></footer>
 
+<div id="toast" popover="manual" role="status" aria-live="polite"></div>
+<dialog id="ask"><form class="dl form" id="askForm" method="dialog"><p id="askText" style="margin:0"></p><input id="askInput" maxlength="300" hidden><div class="row"><button class="btn" type="submit">OK</button><button class="btn alt" type="button" id="askNo">Annuler</button></div></form></dialog>
 <dialog id="detail"><div class="dl" id="detailBody"></div></dialog>
 
-<dialog id="contact"><form class="dl form" id="contactForm" method="dialog">
-  <h2>Écrire à l’annonceur</h2>
-  <label>Votre prénom<input name="name" required maxlength="40"></label>
-  <label>Votre email (le vendeur vous répondra dessus)<input name="email" type="email" required maxlength="120"></label>
-  <label>Message<textarea name="body" rows="4" required minlength="5" maxlength="1000"></textarea></label>
-  <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-  <p class="note">Votre email est transmis au vendeur uniquement pour qu’il puisse vous répondre. Aucune inscription nécessaire.</p>
-  <div class="msg" id="contactMsg" role="alert"></div>
-  <div class="row"><button class="btn" type="submit" id="contactGo">Envoyer</button><button class="btn alt" type="button" id="contactCancel">Annuler</button></div>
-</form></dialog>
+<dialog id="contact"><form class="dl form" id="contactForm" method="dialog"><h2>Écrire à l’annonceur</h2><label>Message<textarea name="body" rows="4" required minlength="2" maxlength="1000"></textarea></label><p class="note">Votre message reste sur le site : le vendeur vous répond dans l’onglet Messages. Ne communiquez jamais d’informations bancaires.</p><div class="msg" id="contactMsg" role="alert"></div><div class="row"><button class="btn" type="submit" id="contactGo">Envoyer</button><button class="btn alt" type="button" id="contactCancel">Annuler</button></div></form></dialog>
 
 <dialog id="auth"><form class="dl form" id="authForm" method="dialog">
   <h2 id="authTitle">Connexion</h2>
@@ -140,6 +138,8 @@ const CATS={"🪙":"Monnaies & médailles","📮":"Timbres & cartes postales","�
 const ETATS=["Neuf avec étiquette","Neuf sans étiquette","Très bon état","Bon état","État satisfaisant","À restaurer"];
 const DEPS={16:"Charente",17:"Charente-Maritime",19:"Corrèze",23:"Creuse",24:"Dordogne",33:"Gironde",40:"Landes",47:"Lot-et-Garonne",64:"Pyrénées-Atlantiques",79:"Deux-Sèvres",86:"Vienne",87:"Haute-Vienne"};
 const $=id=>document.getElementById(id);
+let _tt;function toast(m){const t=$("toast");t.textContent=m;try{t.hidePopover()}catch(_){}try{t.showPopover()}catch(_){t.style.display="block"}clearTimeout(_tt);_tt=setTimeout(()=>{try{t.hidePopover()}catch(_){t.style.display=""}},4500)}
+function ask(text,o={}){return new Promise(res=>{const d=$("ask"),i=$("askInput");$("askText").textContent=text;i.hidden=!o.input;i.value="";let v=null;$("askForm").onsubmit=e=>{e.preventDefault();v=o.input?i.value.trim():true;d.close()};$("askNo").onclick=()=>d.close();d.onclose=()=>res(v);d.showModal();if(o.input)i.focus()})}
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 const PHOTO_BASE=SUPABASE_URL+"/storage/v1/object/public/photos/";
@@ -174,7 +174,7 @@ function render(){
     <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
 }
 ["q","cat","dep","etat","max","sort"].forEach(id=>$(id).addEventListener("input",render));
-$("grid").addEventListener("click",async e=>{const dm=e.target.closest("[data-delmsg]");if(dm){if(!confirm("Supprimer ce message ?"))return;const {error}=await sb.from("messages").delete().eq("id",dm.dataset.delmsg);if(!error){msgs=msgs.filter(m=>m.id!==dm.dataset.delmsg);document.querySelector('#tabs [data-t="msg"]').textContent="Messages"+(msgs.length?" ("+msgs.length+")":"");renderMsgs()}return}const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b)openDetail(b.dataset.id)});
+$("grid").addEventListener("click",async e=>{const cv=e.target.closest("[data-conv]");if(cv){openThread(cv.dataset.conv);return}const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b)openDetail(b.dataset.id)});
 
 function openDetail(id){
   const a=ads.find(x=>x.id===id);if(!a)return;
@@ -197,15 +197,15 @@ function openDetail(id){
     $("tel").innerHTML=p?`<a class="tel" href="tel:${esc(p.replace(/[^0-9+]/g,''))}">${esc(p)}</a>`:`<span class="note">Numéro indisponible.</span>`;
   };
   if(mine){
-    $("boost").onclick=async()=>{const {error}=await sb.from("listings").update({boosted_at:new Date().toISOString()}).eq("id",id);if(error)return alert(error.message);$("detail").close();load()};
-    $("del").onclick=async()=>{if(!confirm("Supprimer cette annonce ?"))return;const paths=[...new Set([...(a.photos||[]),a.photo_url].filter(u=>safeUrl(u)).map(u=>decodeURIComponent(u.slice(PHOTO_BASE.length))))];const {error}=await sb.from("listings").delete().eq("id",id);if(error)return alert(error.message);if(paths.length)sb.storage.from("photos").remove(paths);$("detail").close();load()};
-    $("done").onclick=async()=>{const {error}=await sb.from("listings").update({sold:!a.sold}).eq("id",id);if(error)return alert(error.message);$("detail").close();load()};
+    $("boost").onclick=async()=>{const {error}=await sb.from("listings").update({boosted_at:new Date().toISOString()}).eq("id",id);if(error)return toast(error.message);$("detail").close();load()};
+    $("del").onclick=async()=>{if(!await ask("Supprimer cette annonce ?"))return;const paths=[...new Set([...(a.photos||[]),a.photo_url].filter(u=>safeUrl(u)).map(u=>decodeURIComponent(u.slice(PHOTO_BASE.length))))];const {error}=await sb.from("listings").delete().eq("id",id);if(error)return toast(error.message);if(paths.length)sb.storage.from("photos").remove(paths);$("detail").close();load()};
+    $("done").onclick=async()=>{const {error}=await sb.from("listings").update({sold:!a.sold}).eq("id",id);if(error)return toast(error.message);$("detail").close();load()};
     $("edit").onclick=()=>startEdit(a);
   }else $("rep").onclick=async()=>{
     if(!user){$("detail").close();openAuth("Connectez-vous pour signaler une annonce.");return}
-    const reason=prompt("Pourquoi signalez-vous cette annonce ? (professionnel, faux, arnaque…)");if(!reason)return;
+    const reason=await ask("Pourquoi signalez-vous cette annonce ? (professionnel, faux, arnaque…)",{input:true});if(!reason)return;
     const {error}=await sb.from("reports").insert({listing_id:id,reporter_id:user.id,reason:reason.slice(0,300)});
-    alert(error?error.message:"Merci, l’annonce a été signalée.");
+    toast(error?error.message:"Merci, l’annonce a été signalée.");
   };
   $("close").onclick=()=>$("detail").close();
   $("share").onclick=async()=>{const url=location.href.split("#")[0]+"#a-"+id;try{if(navigator.share){await navigator.share({title:a.title,url})}else{await navigator.clipboard.writeText(url);$("share").textContent="Lien copié ✓"}}catch(_){}};
@@ -217,22 +217,55 @@ function openDetail(id){
 $("detail").addEventListener("close",()=>{if(location.hash.startsWith("#a-"))history.replaceState(null,"",location.pathname+location.search)});
 function openFromHash(){const m=location.hash.match(/^#a-([\w-]+)$/);if(!m||$("detail").open)return;const a=ads.find(x=>String(x.id)===m[1]);if(a)openDetail(a.id)}
 
-/* Messagerie */
+/* Messagerie interne */
+let convs=[],openConv=null,thread=[],rt=null;
+const unreadOf=c=>{const seen=c.buyer_id===user.id?c.buyer_seen_at:c.seller_seen_at;return c.last_sender!==user.id&&new Date(c.last_at)>new Date(seen)};
+function badge(){const n=user?convs.filter(unreadOf).length:0;document.querySelector('#tabs [data-t="msg"]').textContent="Messages"+(n?" ("+n+")":"")}
+async function loadConvs(){if(!user){convs=[];openConv=null}else{const {data}=await sb.from("conversations").select("*").order("last_at",{ascending:false});convs=data||[];if(openConv)openConv=convs.find(c=>c.id===openConv.id)||null}badge()}
+function showMsgTab(){tab="msg";syncTabs();render()}
 function renderMsgs(){
-  $("count").textContent=msgs.length+(msgs.length>1?" messages reçus":" message reçu");
-  const title=id=>{const a=ads.find(x=>x.id===id);return a?a.title:"Annonce supprimée"};
-  $("grid").innerHTML=msgs.length?`<div style="grid-column:1/-1;display:grid;gap:10px">`+msgs.map(m=>`<div class="card" style="cursor:default;padding:12px"><div class="meta">${esc(title(m.listing_id))} · ${new Date(m.created_at).toLocaleDateString("fr-FR")}</div><h3>${esc(m.sender_name)}</h3><p style="margin:6px 0">${esc(m.body)}</p><div class="row"><a class="btn" style="text-decoration:none" href="mailto:${esc(m.sender_email)}?subject=${encodeURIComponent("Re : "+title(m.listing_id))}">Répondre par email</a><button class="btn alt" data-delmsg="${esc(m.id)}">Supprimer</button></div></div>`).join("")+`</div>`:'<div class="empty">Aucun message. Quand un acheteur vous écrit, il apparaît ici.</div>';
+  if(openConv)return renderThread();
+  $("count").textContent=convs.length+(convs.length>1?" conversations":" conversation");
+  const t=c=>{const a=ads.find(x=>x.id===c.listing_id);return a?a.title:"Annonce supprimée"};
+  $("grid").innerHTML=convs.length?`<div style="grid-column:1/-1;display:grid;gap:10px">`+convs.map(c=>{const me=c.buyer_id===user.id;return `<button class="card" data-conv="${esc(c.id)}" style="padding:12px;gap:2px"><div class="meta">${esc(t(c))} · ${me?"Vendeur : "+esc(c.seller_name||"Particulier"):"Acheteur : "+esc(c.buyer_name||"Membre")}</div><h3>${unreadOf(c)?"● ":""}${esc(c.last_body)}</h3><div class="meta">${new Date(c.last_at).toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"})}</div></button>`}).join("")+`</div>`:'<div class="empty">Aucune conversation. Ouvrez une annonce et touchez « Contacter l’annonceur ».</div>';
+}
+const bubble=m=>{const me=m.sender_id===user.id;return `<div style="justify-self:${me?"end":"start"};max-width:80%;padding:8px 12px;border-radius:14px;background:${me?"var(--accent)":"var(--surface)"};color:${me?"var(--accent-ink)":"var(--ink)"};border:1px solid var(--line);white-space:pre-line">${esc(m.body)}<div style="font-size:.7rem;opacity:.7">${new Date(m.created_at).toLocaleTimeString("fr-FR",{timeStyle:"short"})}</div></div>`};
+function renderThread(){
+  const c=openConv,a=ads.find(x=>x.id===c.listing_id);
+  $("count").textContent=a?a.title:"Annonce supprimée";
+  const keep=$("chatIn")?$("chatIn").value:"";
+  $("grid").innerHTML=`<div style="grid-column:1/-1;display:grid;gap:8px"><div class="row"><button class="btn alt" id="back">← Conversations</button>${a?'<button class="btn alt" id="seeAd">Voir l’annonce</button>':""}</div><div id="chat" style="display:grid;gap:6px;max-height:55vh;overflow:auto;padding:4px">${thread.map(bubble).join("")}</div><form id="chatForm" class="row" style="flex-wrap:nowrap"><textarea id="chatIn" rows="2" maxlength="1000" required placeholder="Votre message" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface)"></textarea><button class="btn">Envoyer</button></form></div>`;
+  $("chatIn").value=keep;
+  $("back").onclick=()=>{openConv=null;renderMsgs()};
+  if(a)$("seeAd").onclick=()=>openDetail(a.id);
+  $("chatForm").onsubmit=async e=>{e.preventDefault();const i=$("chatIn"),body=i.value.trim();if(!body)return;i.value="";const {error}=await sb.from("chat_messages").insert({conv_id:c.id,body});if(error){i.value=body;toast(error.message.includes("Trop")?error.message:"Envoi impossible, réessayez.")}};
+  const ch=$("chat");ch.scrollTop=ch.scrollHeight;
+}
+async function openThread(id){const c=convs.find(x=>x.id===id);if(!c)return;openConv=c;const {data}=await sb.from("chat_messages").select("*").eq("conv_id",id).order("created_at");thread=data||[];if(tab!=="msg")showMsgTab();else renderMsgs();markRead()}
+async function markRead(){if(!openConv)return;const c=openConv;await sb.rpc("mark_read",{p_conv:c.id});c[c.buyer_id===user.id?"buyer_seen_at":"seller_seen_at"]=new Date().toISOString();badge()}
+function subscribe(){
+  if(rt){sb.removeChannel(rt);rt=null}if(!user)return;
+  rt=sb.channel("chat").on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_messages"},async p=>{
+    const m=p.new;await loadConvs();
+    if(openConv&&m.conv_id===openConv.id){if(!thread.some(t=>t.id===m.id))thread.push(m);if(tab==="msg")renderMsgs();markRead()}
+    else if(tab==="msg")renderMsgs();
+  }).subscribe();
 }
 let contactAd=null;
-function openContact(a){contactAd=a;$("contactMsg").textContent="";$("detail").close();$("contact").showModal()}
+function openContact(a){
+  if(!user){$("detail").close();openAuth("Connectez-vous pour écrire au vendeur.");return}
+  $("detail").close();const c=convs.find(x=>x.listing_id===a.id);
+  if(c){openThread(c.id);return}
+  contactAd=a;$("contactMsg").textContent="";$("contact").showModal();
+}
 $("contactCancel").onclick=()=>$("contact").close();
 $("contactForm").addEventListener("submit",async e=>{
-  e.preventDefault();const f=new FormData(e.target);if(f.get("website"))return;
-  const btn=$("contactGo");btn.disabled=true;$("contactMsg").textContent="Envoi…";
-  const {error}=await sb.from("messages").insert({listing_id:contactAd.id,sender_name:f.get("name").trim(),sender_email:f.get("email").trim(),body:f.get("body").trim()});
+  e.preventDefault();const body=String(new FormData(e.target).get("body")).trim(),btn=$("contactGo");
+  btn.disabled=true;$("contactMsg").textContent="Envoi…";
+  const {data,error}=await sb.rpc("start_conversation",{p_listing:contactAd.id,p_body:body});
   btn.disabled=false;
   if(error){$("contactMsg").textContent=error.message.includes("Trop")?error.message:"Envoi impossible, réessayez plus tard.";return}
-  e.target.reset();$("contact").close();alert("Message envoyé. Le vendeur vous répondra par email.");
+  e.target.reset();$("contact").close();await loadConvs();openThread(data);
 });
 
 /* Favoris, suivis, onglets */
@@ -249,9 +282,9 @@ async function toggleFollow(sid){
 async function loadMine(){
   favs=new Set();follows=new Set();msgs=[];
   if(user){const [f,w]=await Promise.all([sb.from("favorites").select("listing_id"),sb.from("follows").select("seller_id")]);
-    (f.data||[]).forEach(r=>favs.add(r.listing_id));(w.data||[]).forEach(r=>follows.add(r.seller_id));const m=await sb.from("messages").select("*").order("created_at",{ascending:false});msgs=m.data||[]}
+    (f.data||[]).forEach(r=>favs.add(r.listing_id));(w.data||[]).forEach(r=>follows.add(r.seller_id));}
   else if(!["all","echange","don"].includes(tab)){tab="all";syncTabs()}
-  document.querySelector('#tabs [data-t="msg"]').textContent="Messages"+(msgs.length?" ("+msgs.length+")":"");
+  await loadConvs();
   render();
 }
 function syncTabs(){document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab))}
@@ -262,7 +295,7 @@ function tabOk(a){if(a.sold&&tab!=="mine")return false;return tab==="all"||(tab=
 function emptyMsg(){return {fav:"Aucun favori pour l’instant. Touchez le cœur d’une annonce pour la retrouver ici.",follow:"Vous ne suivez encore personne. Ouvrez une annonce et touchez « Suivre ce vendeur ».",mine:"Vous n’avez pas encore d’annonce. Touchez « Déposer une annonce ».",echange:"Aucun échange proposé pour l’instant. Déposez le premier !",don:"Aucun don pour l’instant. Vous avez des objets à donner ? Déposez une annonce.",all:"Aucune annonce ne correspond. Soyez le premier à déposer la vôtre."}[tab]}
 
 /* Auth */
-function setUser(u){user=u;$("delAcc").hidden=!u;$("authBtn").textContent=u?"Déconnexion":"Connexion";loadMine()}
+function setUser(u){const same=user&&u&&user.id===u.id;user=u;if(!same){openConv=null;subscribe()}$("delAcc").hidden=!u;$("authBtn").textContent=u?"Déconnexion":"Connexion";loadMine()}
 sb.auth.onAuthStateChange((e,s)=>{setUser(s?s.user:null);if(e==="PASSWORD_RECOVERY"){$("recoverMsg").textContent="";$("recover").showModal()}});
 sb.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
 function openAuth(msg){signup=false;syncAuth();$("authMsg").textContent=msg||"";$("auth").showModal()}
@@ -297,16 +330,16 @@ $("recoverForm").addEventListener("submit",async e=>{
   e.preventDefault();const pw=new FormData(e.target).get("pw");$("recoverMsg").textContent="…";
   const {error}=await sb.auth.updateUser({password:pw});
   if(error){$("recoverMsg").textContent=error.message;return}
-  e.target.reset();$("recover").close();alert("Mot de passe modifié.");
+  e.target.reset();$("recover").close();toast("Mot de passe modifié.");
 });
 $("delAcc").onclick=async e=>{
   e.preventDefault();if(!user)return;
-  if(!confirm("Supprimer définitivement votre compte, vos annonces et vos photos ? Cette action est irréversible."))return;
+  if(!await ask("Supprimer définitivement votre compte, vos annonces et vos photos ? Cette action est irréversible."))return;
   try{const {data:files}=await sb.storage.from("photos").list(user.id,{limit:200});if(files&&files.length)await sb.storage.from("photos").remove(files.map(f=>user.id+"/"+f.name))}catch(_){}
   const {error}=await sb.rpc("delete_my_account");
-  if(error)return alert("Suppression impossible : "+error.message);
+  if(error)return toast("Suppression impossible : "+error.message);
   try{await sb.auth.signOut({scope:"local"})}catch(_){}
-  alert("Votre compte a été supprimé.");load();
+  toast("Votre compte a été supprimé.");load();
 };
 
 /* Dépôt d'annonce */
@@ -339,7 +372,7 @@ $("form").addEventListener("submit",async e=>{
       $("post").close();btn.disabled=false;load();return;
     }
     let pseudo=(user.user_metadata&&user.user_metadata.pseudo)||"";
-    if(!pseudo){pseudo=(prompt("Choisissez un pseudo visible sur vos annonces (ne mettez pas votre vrai nom)")||"").trim().slice(0,20);if(pseudo)await sb.auth.updateUser({data:{pseudo}})}
+    if(!pseudo){pseudo=(await ask("Choisissez un pseudo visible sur vos annonces (ne mettez pas votre vrai nom)",{input:true})||"").trim().slice(0,20);if(pseudo)await sb.auth.updateUser({data:{pseudo}})}
     const urls=[];
     for(const p of pics){const path=`${user.id}/${crypto.randomUUID()}.jpg`;
       const up=await sb.storage.from("photos").upload(path,p.b,{contentType:"image/jpeg"});
@@ -352,6 +385,7 @@ $("form").addEventListener("submit",async e=>{
   }catch(err){msg.textContent="Erreur : "+(err.message||err)}
   btn.disabled=false;
 });
+{const p=new URLSearchParams(location.search);if(CATS[p.get("cat")])$("cat").value=p.get("cat");if(DEPS[p.get("dep")])$("dep").value=p.get("dep")}
 load();
 </script>
 </body>

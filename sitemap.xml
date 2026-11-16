@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/</loc><lastmod>2026-11-15</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/legal.html</loc><lastmod>2026-11-15</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/</loc><lastmod>2026-11-16</lastmod><priority>1.0</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/legal.html</loc><lastmod>2026-11-15</lastmod><priority>0.3</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/monnaies-medailles.html</loc><lastmod>2026-11-16</lastmod><priority>0.7</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/timbres-cartes-postales.html</loc><lastmod>2026-11-16</lastmod><priority>0.7</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/cartes-a-collectionner.html</loc><lastmod>2026-11-16</lastmod><priority>0.7</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/jouets-figurines.html</loc><lastmod>2026-11-16</lastmod><priority>0.7</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/vinyles-disques.html</loc><lastmod>2026-11-16</lastmod><priority>0.7</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/livres-bd-anciennes.html</loc><lastmod>2026-11-16</lastmod><priority>0.7</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/montres-horlogerie.html</loc><lastmod>2026-11-16</lastmod><priority>0.7</priority></url>
+  <url><loc>https://snakewars26.github.io/collectionneurs-aquitaine/antiquites-brocante.html</loc><lastmod>2026-11-16</lastmod><priority>0.7</priority></url>
 </urlset>
