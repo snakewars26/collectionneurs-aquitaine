@@ -2,29 +2,28 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://buwcofosofpdvesirtpt.supabase.co; connect-src 'self' https://buwcofosofpdvesirtpt.supabase.co wss://buwcofosofpdvesirtpt.supabase.co; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Trésors d’Aquitaine – objets de collection entre particuliers</title>
 <meta name="description" content="Petites annonces entre particuliers en Nouvelle-Aquitaine : objets de collection, hobbies et créations. Vente, échange et don.">
 <meta name="theme-color" content="#1f4a40">
-<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Trésors">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="color-scheme" content="light dark"><meta name="apple-mobile-web-app-title" content="Trésors">
 <meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:site_name" content="Trésors d’Aquitaine">
 <meta property="og:title" content="Trésors d’Aquitaine – vendre, échanger, donner"><meta property="og:description" content="Petites annonces entre particuliers en Nouvelle-Aquitaine : objets de collection, hobbies et créations. Vente, échange et don.">
 <link rel="canonical" href="https://snakewars26.github.io/collectionneurs-aquitaine/">
 <meta property="og:url" content="https://snakewars26.github.io/collectionneurs-aquitaine/"><meta property="og:image" content="https://snakewars26.github.io/collectionneurs-aquitaine/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://snakewars26.github.io/collectionneurs-aquitaine/og-image.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🪙%3C/text%3E%3C/svg%3E">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;600;800&display=swap">
-<meta property="og:image:alt" content="Trésors d’Aquitaine : vendre, échanger ou donner des objets de collection"><meta name="twitter:title" content="Trésors d’Aquitaine – vendre, échanger, donner">
+<meta property="og:image:alt" content="Trésors d’Aquitaine : vendre, échanger ou donner des objets de collection"><meta name="twitter:title" content="Trésors d’Aquitaine – vendre, échanger, donner"><meta name="twitter:description" content="Petites annonces entre particuliers en Nouvelle-Aquitaine : objets de collection, hobbies et créations.">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Trésors d’Aquitaine","url":"https://snakewars26.github.io/collectionneurs-aquitaine/","inLanguage":"fr-FR","description":"Petites annonces entre particuliers en Nouvelle-Aquitaine : objets de collection, hobbies et créations. Vente, échange et don."}</script>
 <style>
-:root{--bg:#eef3f1;--surface:#fff;--ink:#16302b;--muted:#5d716c;--line:#d3dedb;--accent:#8e2a3b;--accent-ink:#fff;--pine:#1f4a40;--head-ink:#fff}
+:root{color-scheme:light dark;--bg:#eef3f1;--surface:#fff;--ink:#16302b;--muted:#5d716c;--line:#d3dedb;--accent:#8e2a3b;--accent-ink:#fff;--pine:#1f4a40;--head-ink:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#0f1f1c;--surface:#172b27;--ink:#e6efec;--muted:#9bb0aa;--line:#2b443e;--accent:#e0708a;--accent-ink:#1a0a0e;--pine:#1a3d35;--head-ink:#e6efec}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Public Sans",system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom,0px)}
 h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0;line-height:1.15}
 header{background:var(--pine);color:var(--head-ink);padding:calc(18px + env(safe-area-inset-top,0px)) 16px 18px}
-.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+.wrap{max-width:960px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
 header .wrap{padding:0;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
 header h1{font-size:1.6rem;font-weight:800}
 header p{margin:2px 0 0;opacity:.85;font-size:.9rem}
@@ -56,9 +55,9 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .note{font-size:.82rem;color:var(--muted)}
 .msg{font-size:.88rem;color:var(--accent);min-height:1.2em}
-.thumbs{display:flex;gap:8px;flex-wrap:wrap}.th{position:relative;width:72px;height:72px;border-radius:8px;background:var(--line) center/cover;border:0;padding:0;cursor:pointer}.th span{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:14px;line-height:22px;text-align:center}.addph{text-align:center;cursor:pointer;display:block}.lbl{font-size:.88rem;color:var(--muted)}.field{display:grid;gap:8px}
-.tabs{display:flex;gap:6px;overflow-x:auto;margin-top:14px;padding-bottom:2px}.tabs button{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 14px;white-space:nowrap;cursor:pointer}.tabs button.on{background:var(--pine);color:var(--head-ink);border-color:var(--pine)}
-.card{position:relative}.heart{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);color:#8e2a3b;display:grid;place-items:center;font-size:1.2rem;z-index:1}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}.th{position:relative;width:72px;height:72px;border-radius:8px;background:var(--line) center/cover;border:0;padding:0;cursor:pointer}.th .x{position:absolute;top:-8px;right:-8px;width:28px;height:28px;border:0;padding:0;cursor:pointer;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:16px;line-height:28px;text-align:center}.addph{text-align:center;cursor:pointer;display:block}.lbl{font-size:.88rem;color:var(--muted)}.field{display:grid;gap:8px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-top:14px;padding-bottom:2px}.tabs button{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:10px 14px;white-space:nowrap;cursor:pointer}.tabs button.on{background:var(--pine);color:var(--head-ink);border-color:var(--pine)}
+.card{position:relative}.cmain{display:flex;flex-direction:column;flex:1;cursor:pointer;text-align:left}.cmain:focus-visible{outline-offset:-3px}.heart{border:0;padding:0;cursor:pointer;position:absolute;top:8px;right:8px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);color:#8e2a3b;display:grid;place-items:center;font-size:1.2rem;z-index:1}
 [hidden]{display:none!important}
 .tag.k{background:var(--pine);color:var(--head-ink)}.free{color:var(--pine)}@media (prefers-color-scheme:dark){.free{color:#8fd1bd}}
 .empty{padding:40px 0;text-align:center;color:var(--muted)}
@@ -72,8 +71,8 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 .th2{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .th2 .bk{border:0;background:none;font-size:1.5rem;color:var(--ink);cursor:pointer;padding:0 6px}.th2 .tt{flex:1;min-width:0;display:grid}.th2 .tt b,.th2 .tt span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.th2 .tt span{font-size:.82rem;color:var(--muted)}
 .day{justify-self:center;font-size:.75rem;color:var(--muted);margin:8px 0 2px}
-.bb{max-width:82%;padding:8px 12px;border-radius:16px;border:1px solid var(--line);white-space:pre-line;overflow-wrap:anywhere}.bb.me{justify-self:end;background:var(--accent);color:#fff;border-color:transparent;border-bottom-right-radius:4px}.bb.ot{justify-self:start;background:var(--surface);border-bottom-left-radius:4px}.bb small{display:block;font-size:.68rem;opacity:.7;margin-top:2px}
-.cbar{position:sticky;bottom:0;background:var(--bg);padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;align-items:flex-end}.cbar textarea{flex:1;padding:10px 14px;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);font:inherit;resize:none;max-height:120px}.cbar button{width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:1.2rem;cursor:pointer}
+.bb{max-width:82%;padding:8px 12px;border-radius:16px;border:1px solid var(--line);white-space:pre-line;overflow-wrap:anywhere}.bb.me{justify-self:end;background:var(--accent);color:var(--accent-ink);border-color:transparent;border-bottom-right-radius:4px}.bb.ot{justify-self:start;background:var(--surface);border-bottom-left-radius:4px}.bb small{display:block;font-size:.68rem;opacity:.7;margin-top:2px}
+.cbar{position:sticky;bottom:0;background:var(--bg);padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;align-items:flex-end}.cbar textarea{flex:1;padding:10px 14px;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);font:inherit;resize:none;max-height:120px}.cbar button{width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);font-size:1.2rem;cursor:pointer}
 </style>
 </head>
 <body>
@@ -127,7 +126,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <h2 id="postTitle">Déposer une annonce</h2>
   <label id="kindLbl">Type d’annonce<select name="kind" id="fkind"><option value="vente">Vente</option><option value="echange">Échange</option><option value="don">Don (gratuit)</option></select></label>
   <label>Titre<input name="title" required minlength="3" maxlength="70"></label>
-  <div class="row"><label style="flex:1" id="priceLbl">Prix (€)<input name="price" id="fprice" type="number" min="0" required></label>
+  <div class="row"><label style="flex:1" id="priceLbl">Prix (€)<input name="price" id="fprice" type="number" min="0" max="1000000" required></label>
   <label style="flex:1">Catégorie<select name="cat" id="fcat"></select></label></div>
   <label id="spLbl" hidden>Type d’animal<select name="sp" id="fsp"></select></label>
   <p class="note" id="animNote" hidden>Animaux : chiens, chats et furets interdits sur ce site, ainsi que les espèces protégées ou soumises à autorisation. Décrivez honnêtement l’état de santé et les besoins de l’animal.</p>
@@ -144,9 +143,11 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <div class="row"><button class="btn" type="submit" id="postGo">Publier</button><button class="btn alt" type="button" id="cancel">Annuler</button></div>
 </form></dialog>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 const SUPABASE_URL="https://buwcofosofpdvesirtpt.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1d2NvZm9zb2ZwZHZlc2lydHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ3MjE3ODYsImV4cCI6MjExMDI5Nzc4Nn0.TH1rg9mRsqTtKlB17--gP62IDyJ2NQirN5FiUV-UqJQ";
+if(!window.supabase){document.getElementById("count").textContent="Service momentanément indisponible. Rechargez la page dans un instant.";throw new Error("supabase indisponible")}
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const CATS={"🪙":"Monnaies & médailles","📮":"Timbres & cartes postales","🃏":"Cartes à collectionner","🧸":"Jouets & figurines","💿":"Vinyles & disques","📚":"Livres & BD anciennes","🕰️":"Montres & horlogerie","🏺":"Antiquités & brocante","🎨":"Hobby & loisirs créatifs","🐾":"Animaux","🧰":"Accessoires pour animaux"};
 const CREA=["🎨"];
@@ -187,15 +188,16 @@ function render(){
   const q=norm($("q").value.trim()),c=$("cat").value,d=$("dep").value,m=parseFloat($("max").value),s=$("sort").value,et=$("etat").value;
   const an=c==="🐾";$("spf").hidden=!an;$("etat").hidden=an;const spv=an?$("spf").value:"";
   const list=ads.filter(a=>(!q||norm(a.title+" "+a.description+" "+a.city).includes(q))&&(!c||a.category===c)&&(!d||String(a.dept)===d)&&(isNaN(m)||a.price<=m)&&(!et||an||a.etat===et)&&(!spv||spOf(a)===spv)&&tabOk(a));
-  list.sort((a,b)=>s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:when(b)-when(a));
+  const pv=(a,d)=>kindOf(a)==="vente"?+a.price:(d?-1:Infinity);list.sort((a,b)=>{if(s==="new")return when(b)-when(a);const x=pv(a,s==="desc"),y=pv(b,s==="desc"),c=x<y?-1:x>y?1:0;return s==="desc"?-c:c});
   $("count").innerHTML=(tab==="crea"?'<button class="btn alt" data-crea="">← Tous les créateurs</button> ':"")+list.length+(list.length>1?" annonces":" annonce");
-  $("grid").innerHTML=list.length?list.map(a=>`<button class="card" data-id="${esc(a.id)}"><span class="heart" data-fav="${esc(a.id)}" role="button" aria-label="Favori">${favs.has(a.id)?"♥":"♡"}</span>
-    <div class="ph">${safeUrl(a.photo_url)?`<img src="${esc(safeUrl(a.photo_url))}" alt="${esc(a.title)}" loading="lazy" decoding="async">`:esc(a.category)}</div>
+  $("grid").innerHTML=list.length?list.map(a=>`<div class="card"><button type="button" class="heart" data-fav="${esc(a.id)}" aria-pressed="${favs.has(a.id)}" aria-label="Favori">${favs.has(a.id)?"♥":"♡"}</button><div class="cmain" role="button" tabindex="0" data-id="${esc(a.id)}">
+    <div class="ph">${safeUrl(a.photo_url)?`<img src="${esc(safeUrl(a.photo_url))}" alt="" loading="lazy" decoding="async">`:esc(a.category)}</div>
     <div class="b">${a.sold?`<span class="tag" style="background:var(--muted)">${doneTxt(a)}</span> `:''}${kindOf(a)!=="vente"?`<span class="tag k">${esc(KINDS[kindOf(a)])}</span> `:''}${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
-    <div class="meta">${esc(ANIM.includes(a.category)?spOf(a):a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
+    <div class="meta">${esc(ANIM.includes(a.category)?spOf(a):a.etat)}</div><div class="meta">${esc(a.city)} (${esc(a.dept)}) · ${ago(a)}</div></div></div></div>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
 }
 ["q","cat","dep","etat","max","sort","spf"].forEach(id=>$(id).addEventListener("input",render));
-$("grid").addEventListener("click",async e=>{const cv=e.target.closest("[data-conv]");if(cv){openThread(cv.dataset.conv);return}const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b&&b.dataset.id)openDetail(b.dataset.id)});
+$("grid").addEventListener("click",async e=>{const cv=e.target.closest("[data-conv]");if(cv){openThread(cv.dataset.conv);return}const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".cmain");if(b)openDetail(b.dataset.id)});
+$("grid").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("cmain")){e.preventDefault();e.target.click()}});
 
 function openDetail(id){
   const a=ads.find(x=>x.id===id);if(!a)return;
@@ -206,12 +208,12 @@ function openDetail(id){
   <div class="meta">${esc(KINDS[kindOf(a)])} · ${esc(CATS[a.category]||"")} · ${esc(ANIM.includes(a.category)?spOf(a):a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
   <p style="white-space:pre-line">${esc(a.description)}</p>
   <div class="meta">Vendeur : <b>${esc(a.seller_name||"Particulier")}</b></div>
-  <div id="tel" class="row">${mine||a.sold?"":'<button class="btn" id="contactBtn">✉ Contacter l’annonceur</button>'}<button class="btn alt" id="showTel">Voir le numéro</button></div>
+  <div id="tel" class="row">${mine||a.sold?"":'<button class="btn" id="contactBtn">✉ Contacter l’annonceur</button>'}${a.sold?"":'<button class="btn alt" id="showTel">Voir le numéro</button>'}</div>
   <p class="note">Demandez des photos détaillées et vérifiez l’objet avant tout accord. ${ANIM.includes(a.category)?"Animal vivant : vérifiez sa santé, ses conditions de détention et la réglementation de l’espèce avant tout accord. Remise en main propre uniquement, sans paiement à l’avance.":"Remise en main propre uniquement, sans paiement à l’avance."}</p>
   <div class="row"><button class="btn alt" id="fav">${favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"}</button>${mine?'<button class="btn alt" id="edit">Modifier</button><button class="btn alt" id="done">'+(a.sold?"Remettre en ligne":"Marquer comme "+doneTxt(a).toLowerCase())+'</button><button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="follow">'+(follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur")+'</button><button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="share">↗ Partager</button><button class="btn alt" id="close">Fermer</button></div>`;
   document.querySelectorAll("#detailBody .th").forEach(t=>t.onclick=()=>{$("mainPh").style.backgroundImage="url('"+t.dataset.u+"')"});
   if($("contactBtn"))$("contactBtn").onclick=()=>openContact(a);
-  $("showTel").onclick=async()=>{
+  if($("showTel"))$("showTel").onclick=async()=>{
     if(!user){$("detail").close();openAuth("Connectez-vous pour voir le numéro de téléphone.");return}
     const {data,error}=await sb.from("listing_contacts").select("phone").eq("listing_id",id).maybeSingle();
     const p=data&&data.phone;
@@ -219,7 +221,7 @@ function openDetail(id){
   };
   if(mine){
     $("boost").onclick=async()=>{const {error}=await sb.from("listings").update({boosted_at:new Date().toISOString()}).eq("id",id);if(error)return toast(error.message);$("detail").close();load()};
-    $("del").onclick=async()=>{if(!await ask("Supprimer cette annonce ?"))return;const paths=[...new Set([...(a.photos||[]),a.photo_url].filter(u=>safeUrl(u)).map(u=>decodeURIComponent(u.slice(PHOTO_BASE.length))))];const {error}=await sb.from("listings").delete().eq("id",id);if(error)return toast(error.message);if(paths.length)sb.storage.from("photos").remove(paths);$("detail").close();load()};
+    $("del").onclick=async()=>{if(!await ask("Supprimer cette annonce ?"))return;const paths=[...new Set([...(a.photos||[]),a.photo_url].filter(u=>safeUrl(u)).map(u=>{try{return decodeURIComponent(u.slice(PHOTO_BASE.length))}catch(_){return ""}}).filter(Boolean))];const {error}=await sb.from("listings").delete().eq("id",id);if(error)return toast(error.message);if(paths.length)sb.storage.from("photos").remove(paths);$("detail").close();load()};
     $("done").onclick=async()=>{const {error}=await sb.from("listings").update({sold:!a.sold}).eq("id",id);if(error)return toast(error.message);$("detail").close();load()};
     $("edit").onclick=()=>startEdit(a);
   }else $("rep").onclick=async()=>{
@@ -247,7 +249,7 @@ function showMsgTab(){tab="msg";syncTabs();render()}
 function renderMsgs(){
   if(openConv)return renderThread();
   $("count").textContent=convs.length?"Vos conversations":"";
-  const ph=a=>a?(a.photos&&a.photos.length?a.photos[0]:a.photo_url):"";
+  const ph=a=>a?safeUrl(a.photos&&a.photos.length?a.photos[0]:a.photo_url):"";
   const hm=d=>{d=new Date(d);return d.toDateString()===new Date().toDateString()?d.toLocaleTimeString("fr-FR",{timeStyle:"short"}):d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"})};
   $("grid").innerHTML=convs.length?`<div style="grid-column:1/-1;display:grid;gap:8px">`+convs.map(c=>{const a=ads.find(x=>x.id===c.listing_id),me=c.buyer_id===user.id,nm=(me?c.seller_name:c.buyer_name)||(me?"Vendeur":"Acheteur"),u=unreadOf(c),im=ph(a);
     return `<button class="cv${u?" nw":""}" data-conv="${esc(c.id)}"><div class="th"${im?` style="background-image:url('${esc(im)}')"`:""}>${im?"":esc(nm[0].toUpperCase())}</div><div class="tx"><b>${esc(nm)}</b><span class="sub">${esc(a?a.title:"Annonce supprimée")}</span><span class="pv">${c.last_sender===user.id?"Vous : ":""}${esc(c.last_body)}</span></div><div class="rt"><span>${hm(c.last_at)}</span>${u?'<i class="dot"></i>':""}</div></button>`}).join("")+`</div>`:'<div class="empty">Aucune conversation pour le moment.<br>Ouvrez une annonce et touchez « Contacter l’annonceur ».</div>';
@@ -255,7 +257,7 @@ function renderMsgs(){
 function renderThread(){
   const c=openConv,a=ads.find(x=>x.id===c.listing_id),me=c.buyer_id===user.id,nm=(me?c.seller_name:c.buyer_name)||(me?"Vendeur":"Acheteur");
   $("count").textContent="";
-  const keep=$("chatIn")?$("chatIn").value:"";let last="";
+  const keep=$("chatIn")?$("chatIn").value:"",hadFocus=document.activeElement&&document.activeElement.id==="chatIn",nearBottom=!$("chat")||innerHeight+scrollY>=document.body.scrollHeight-150;let last="";
   const body=thread.map(m=>{const d=new Date(m.created_at),k=d.toDateString(),mine=m.sender_id===user.id;let h="";if(k!==last){last=k;h=`<div class="day">${d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}</div>`}
     return h+`<div class="bb ${mine?"me":"ot"}">${esc(m.body)}<small>${d.toLocaleTimeString("fr-FR",{timeStyle:"short"})}</small></div>`}).join("");
   $("grid").innerHTML=`<div style="grid-column:1/-1;display:grid;gap:6px"><div class="th2"><button class="bk" id="back" aria-label="Retour">←</button><div class="tt"><b>${esc(nm)}</b><span>${esc(a?a.title+(a.price>0?" · "+a.price+" €":""):"Annonce supprimée")}</span></div>${a?'<button class="btn alt" id="seeAd">Annonce</button>':""}<button class="bk" id="delConv" aria-label="Supprimer la conversation">🗑</button></div><div id="chat" style="display:grid;gap:6px;padding:4px 0">${body}</div><form id="chatForm" class="cbar"><textarea id="chatIn" rows="1" maxlength="1000" required placeholder="Écrire un message…"></textarea><button aria-label="Envoyer">➤</button></form></div>`;
@@ -265,7 +267,7 @@ function renderThread(){
   if(a)$("seeAd").onclick=()=>openDetail(a.id);
   $("chatForm").onsubmit=async e=>{e.preventDefault();const i=$("chatIn"),t=i.value.trim();if(!t)return;i.value="";const {error}=await sb.from("chat_messages").insert({conv_id:c.id,body:t});if(error){i.value=t;toast(error.message.includes("Trop")?error.message:"Envoi impossible, réessayez.")}};
   $("chatIn").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey&&matchMedia("(hover:hover)").matches){e.preventDefault();$("chatForm").requestSubmit()}};
-  window.scrollTo(0,document.body.scrollHeight);
+  if(hadFocus)$("chatIn").focus();if(nearBottom)window.scrollTo(0,document.body.scrollHeight);
 }
 async function openThread(id){const c=convs.find(x=>x.id===id);if(!c)return;openConv=c;const {data}=await sb.from("chat_messages").select("*").eq("conv_id",id).order("created_at");thread=data||[];if(tab!=="msg")showMsgTab();else renderMsgs();markRead()}
 async function markRead(){if(!openConv)return;const c=openConv;await sb.rpc("mark_read",{p_conv:c.id});c[c.buyer_id===user.id?"buyer_seen_at":"seller_seen_at"]=new Date().toISOString();badge()}
@@ -297,12 +299,12 @@ $("contactForm").addEventListener("submit",async e=>{
 /* Favoris, suivis, onglets */
 async function toggleFav(id){
   if(!user){$("detail").close();openAuth("Connectez-vous pour ajouter des favoris.");return}
-  if(favs.has(id)){favs.delete(id);render();await sb.from("favorites").delete().eq("listing_id",id)}
+  if(favs.has(id)){favs.delete(id);render();const {error}=await sb.from("favorites").delete().eq("listing_id",id);if(error){favs.add(id);render()}}
   else{favs.add(id);render();const {error}=await sb.from("favorites").insert({listing_id:id});if(error){favs.delete(id);render()}}
 }
 async function toggleFollow(sid){
   if(!user){$("detail").close();openAuth("Connectez-vous pour suivre un vendeur.");return}
-  if(follows.has(sid)){follows.delete(sid);render();await sb.from("follows").delete().eq("seller_id",sid)}
+  if(follows.has(sid)){follows.delete(sid);render();const {error}=await sb.from("follows").delete().eq("seller_id",sid);if(error){follows.add(sid);render()}}
   else{follows.add(sid);render();const {error}=await sb.from("follows").insert({seller_id:sid});if(error){follows.delete(sid);render()}}
 }
 async function loadMine(){
@@ -313,7 +315,7 @@ async function loadMine(){
   await loadConvs();
   render();
 }
-function syncTabs(){{const f=document.querySelector(".filters");if(f)f.style.display=tab==="msg"||(tab==="crea"&&!creator)?"none":""}document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab))}
+function syncTabs(){{const f=document.querySelector(".filters");if(f)f.style.display=tab==="msg"||(tab==="crea"&&!creator)?"none":""}document.querySelectorAll("#tabs button").forEach(b=>{b.classList.toggle("on",b.dataset.t===tab);b.setAttribute("aria-pressed",String(b.dataset.t===tab))})}
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   if(!["all","echange","don","crea"].includes(b.dataset.t)&&!user){openAuth("Connectez-vous pour accéder à cette rubrique.");return}
   tab=b.dataset.t;creator="";syncTabs();render()});
@@ -328,11 +330,11 @@ function tabOk(a){if(a.sold&&tab!=="mine")return false;return tab==="all"||(tab=
 function emptyMsg(){return {fav:"Aucun favori pour l’instant. Touchez le cœur d’une annonce pour la retrouver ici.",follow:"Vous ne suivez encore personne. Ouvrez une annonce et touchez « Suivre ce vendeur ».",mine:"Vous n’avez pas encore d’annonce. Touchez « Déposer une annonce ».",echange:"Aucun échange proposé pour l’instant. Déposez le premier !",don:"Aucun don pour l’instant. Vous avez des objets à donner ? Déposez une annonce.",crea:"Aucun créateur pour l’instant. Déposez une annonce dans « Hobby » pour apparaître ici.",all:"Aucune annonce ne correspond. Soyez le premier à déposer la vôtre."}[tab]}
 
 /* Auth */
-function setUser(u){const same=user&&u&&user.id===u.id;user=u;if(!same){openConv=null;subscribe()}$("delAcc").hidden=!u;$("authBtn").textContent=u?"Déconnexion":"Connexion";loadMine()}
+function setUser(u){const same=user&&u&&user.id===u.id;user=u;if(!same){openConv=null;subscribe()}$("delAcc").hidden=!u;$("authBtn").textContent=u?"Déconnexion":"Connexion";loadMine().catch(()=>render())}
 sb.auth.onAuthStateChange((e,s)=>{setUser(s?s.user:null);if(e==="PASSWORD_RECOVERY"){$("recoverMsg").textContent="";$("recover").showModal()}});
 sb.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
 function openAuth(msg){signup=false;syncAuth();$("authMsg").textContent=msg||"";$("auth").showModal()}
-function syncAuth(){$("authForgot").hidden=signup;document.querySelector("#authForm [name=pw]").minLength=signup?8:1;$("cguLbl").hidden=!signup;document.querySelector("#cguLbl input").required=signup;$("pseudoLbl").hidden=!signup;document.querySelector("#pseudoLbl input").required=signup;$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
+function syncAuth(){$("authForgot").hidden=signup;document.querySelector("#authForm [name=pw]").minLength=signup?8:1;document.querySelector("#authForm [name=pw]").autocomplete=signup?"new-password":"current-password";$("cguLbl").hidden=!signup;document.querySelector("#cguLbl input").required=signup;$("pseudoLbl").hidden=!signup;document.querySelector("#pseudoLbl input").required=signup;$("authTitle").textContent=signup?"Créer un compte":"Connexion";$("authGo").textContent=signup?"Créer mon compte":"Se connecter";$("authSwitch").textContent=signup?"J’ai déjà un compte":"Créer un compte"}
 $("authBtn").onclick=async()=>{if(user){await sb.auth.signOut()}else openAuth("")};
 $("authSwitch").onclick=()=>{signup=!signup;syncAuth();$("authMsg").textContent=""};
 $("authCancel").onclick=()=>$("auth").close();
@@ -340,7 +342,7 @@ $("authForm").addEventListener("submit",async e=>{
   e.preventDefault();const f=new FormData(e.target),email=String(f.get("email")).trim().toLowerCase(),password=f.get("pw");
   $("authMsg").textContent="…";
   if(signup){
-    const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.href.split("#")[0],data:{pseudo:(f.get("pseudo")||"").trim().slice(0,20)}}});
+    const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.href.split("#")[0],data:{pseudo:(f.get("pseudo")||"").trim().slice(0,20),cgu_at:new Date().toISOString()}}});
     if(error){$("authMsg").textContent=/already registered/i.test(error.message)?"Un compte existe déjà avec cet email. Connectez-vous, ou utilisez « Mot de passe oublié ».":error.message;if(/already registered/i.test(error.message)){signup=false;syncAuth();$("authMsg").textContent="Un compte existe déjà avec cet email. Connectez-vous, ou utilisez « Mot de passe oublié »."}return}
     if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){signup=false;syncAuth();$("authMsg").textContent="Un compte existe déjà avec cet email. Connectez-vous, ou utilisez « Mot de passe oublié ».";return}
     if(!data.session){$("authMsg").textContent="Compte créé. Vérifiez votre email pour confirmer, puis connectez-vous.";return}
@@ -368,7 +370,7 @@ $("recoverForm").addEventListener("submit",async e=>{
 $("delAcc").onclick=async e=>{
   e.preventDefault();if(!user)return;
   if(!await ask("Supprimer définitivement votre compte, vos annonces et vos photos ? Cette action est irréversible."))return;
-  try{const {data:files}=await sb.storage.from("photos").list(user.id,{limit:200});if(files&&files.length)await sb.storage.from("photos").remove(files.map(f=>user.id+"/"+f.name))}catch(_){}
+  try{for(let n=0;n<50;n++){const {data:files}=await sb.storage.from("photos").list(user.id,{limit:100});if(!files||!files.length)break;await sb.storage.from("photos").remove(files.map(f=>user.id+"/"+f.name));if(files.length<100)break}}catch(_){}
   const {error}=await sb.rpc("delete_my_account");
   if(error)return toast("Suppression impossible : "+error.message);
   try{await sb.auth.signOut({scope:"local"})}catch(_){}
@@ -382,7 +384,7 @@ $("fkind").addEventListener("change",syncKind);
 function syncCat(){const a=ANIM.includes($("fcat").value);$("animNote").hidden=!a;$("animLbl").hidden=!a;$("fanim").required=a;$("spLbl").hidden=!a;$("fsp").required=a;$("etatLbl").hidden=a;if(a)$("fetat").value="Bon état"}
 $("fcat").addEventListener("change",syncCat);
 $("cancel").onclick=()=>$("post").close();
-function resize(file){return new Promise(res=>{if(!file)return res(null);const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,900/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=i.width*k;c.height=i.height*k;c.getContext("2d").drawImage(i,0,0,c.width,c.height);c.toBlob(b=>res(b),"image/jpeg",.75)};i.onerror=()=>res(null);i.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
+function resize(file){return new Promise(res=>{if(!file)return res(null);const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,900/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=i.width*k;c.height=i.height*k;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(i,0,0,c.width,c.height);c.toBlob(b=>res(b),"image/jpeg",.75)};i.onerror=()=>res(null);i.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
 let editing=null;
 function startEdit(a){
   editing=a.id;const fm=$("form").elements;
@@ -393,13 +395,13 @@ function startEdit(a){
 }
 $("post").addEventListener("close",()=>{if(!editing)return;editing=null;$("form").reset();$("kindLbl").hidden=false;$("telLbl").hidden=false;$("form").elements.tel.required=true;$("photoField").hidden=false;$("postTitle").textContent="Déposer une annonce";$("postGo").textContent="Publier";syncKind()});
 let pics=[];
-function drawThumbs(){$("thumbs").innerHTML=pics.map((p,i)=>`<div class="th" style="background-image:url('${p.u}')"><span data-i="${i}" role="button" aria-label="Retirer la photo">×</span></div>`).join("");$("addLbl").style.display=pics.length>=6?"none":""}
-$("photo").addEventListener("change",async e=>{for(const f of [...e.target.files]){if(pics.length>=6)break;const b=await resize(f);if(b)pics.push({b,u:URL.createObjectURL(b)})}e.target.value="";drawThumbs()});
-$("thumbs").addEventListener("click",e=>{const x=e.target.closest("span[data-i]");if(x){pics.splice(+x.dataset.i,1);drawThumbs()}});
+function drawThumbs(){$("thumbs").innerHTML=pics.map((p,i)=>`<div class="th" style="background-image:url('${p.u}')"><button type="button" class="x" data-i="${i}" aria-label="Retirer la photo">×</button></div>`).join("");$("addLbl").style.display=pics.length>=6?"none":""}
+$("photo").addEventListener("change",async e=>{let bad=0;for(const f of [...e.target.files]){if(pics.length>=6)break;const b=await resize(f);if(b)pics.push({b,u:URL.createObjectURL(b)});else bad++}e.target.value="";drawThumbs();if(bad)toast("Photo illisible (format non pris en charge, ex. HEIC) : essayez en JPEG ou PNG.")});
+$("thumbs").addEventListener("click",e=>{const x=e.target.closest("[data-i]");if(x){pics.splice(+x.dataset.i,1);drawThumbs()}});
 $("form").addEventListener("submit",async e=>{
   e.preventDefault();if(!user)return;
   const f=new FormData(e.target),btn=$("postGo"),msg=$("postMsg"),k=f.get("kind");
-  btn.disabled=true;msg.textContent="Publication…";
+  btn.disabled=true;msg.textContent="Publication…";const ups=[];
   try{
     if(editing){
       const up=await sb.from("listings").update({title:f.get("title").trim(),description:((ANIM.includes(f.get("cat"))?"Type d’animal : "+f.get("sp")+"\n":"")+f.get("desc").trim()).slice(0,700),price:k==="vente"?+f.get("price"):0,category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim()}).eq("id",editing);
@@ -411,16 +413,17 @@ $("form").addEventListener("submit",async e=>{
     const urls=[];
     for(const p of pics){const path=`${user.id}/${crypto.randomUUID()}.jpg`;
       const up=await sb.storage.from("photos").upload(path,p.b,{contentType:"image/jpeg"});
-      if(up.error)throw up.error;urls.push(sb.storage.from("photos").getPublicUrl(path).data.publicUrl)}
+      if(up.error)throw up.error;ups.push(path);urls.push(sb.storage.from("photos").getPublicUrl(path).data.publicUrl)}
     const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:((ANIM.includes(f.get("cat"))?"Type d’animal : "+f.get("sp")+"\n":"")+(k==="echange"&&f.get("want").trim()?"Échange souhaité : "+f.get("want").trim()+"\n":"")+f.get("desc").trim()).slice(0,700),kind:k,price:k==="vente"?+f.get("price"):0,category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url:urls[0]||null,photos:urls,seller_name:pseudo||null}).select("id").single();
     if(ins.error)throw ins.error;
     const ct=await sb.from("listing_contacts").insert({listing_id:ins.data.id,phone:f.get("tel").trim()});
     if(ct.error){await sb.from("listings").delete().eq("id",ins.data.id);throw ct.error}
     e.target.reset();syncKind();pics=[];drawThumbs();$("post").close();load();
-  }catch(err){msg.textContent="Erreur : "+(err.message||err)}
+  }catch(err){if(ups.length)sb.storage.from("photos").remove(ups);msg.textContent="Erreur : "+(err.message||err)}
   btn.disabled=false;
 });
 {const p=new URLSearchParams(location.search);if(CATS[p.get("cat")])$("cat").value=p.get("cat");if(DEPS[p.get("dep")])$("dep").value=p.get("dep");if(p.get("tab")==="crea"){tab="crea";syncTabs()}if(SP.includes(p.get("sp")))$("spf").value=p.get("sp");}
+syncTabs();
 load();
 </script>
 <script>
