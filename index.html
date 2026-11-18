@@ -6,6 +6,7 @@
 <title>Trésors d’Aquitaine – objets de collection entre particuliers</title>
 <meta name="description" content="Petites annonces entre particuliers en Nouvelle-Aquitaine : objets de collection, hobbies et créations. Vente, échange et don.">
 <meta name="theme-color" content="#1f4a40">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Trésors">
 <meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:site_name" content="Trésors d’Aquitaine">
 <meta property="og:title" content="Trésors d’Aquitaine – vendre, échanger, donner"><meta property="og:description" content="Petites annonces entre particuliers en Nouvelle-Aquitaine : objets de collection, hobbies et créations. Vente, échange et don.">
 <link rel="canonical" href="https://snakewars26.github.io/collectionneurs-aquitaine/">
@@ -78,7 +79,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 <body>
 <header><div class="wrap">
   <div><h1>Trésors d’Aquitaine</h1><p>Collections, hobbies et créations : vendre, échanger ou donner, en Nouvelle-Aquitaine.</p></div>
-  <div class="row"><button class="btn light" id="newBtn">Déposer une annonce</button><button class="btn light" id="authBtn">Connexion</button></div>
+  <div class="row"><button class="btn light" id="newBtn">Déposer une annonce</button><button class="btn light" id="installBtn" hidden>📲 Installer l’app</button><button class="btn light" id="authBtn">Connexion</button></div>
 </div></header>
 
 <main class="wrap">
@@ -410,6 +411,17 @@ $("form").addEventListener("submit",async e=>{
 });
 {const p=new URLSearchParams(location.search);if(CATS[p.get("cat")])$("cat").value=p.get("cat");if(DEPS[p.get("dep")])$("dep").value=p.get("dep");if(p.get("tab")==="crea"){tab="crea";syncTabs()}}
 load();
+</script>
+<script>
+/* PWA : bouton d'installation discret (jamais de fenêtre automatique) */
+if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+(()=>{let ev=null;const b=document.getElementById("installBtn"),K="pwa-refus";
+const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+const refused=()=>{try{return Date.now()-(+localStorage.getItem(K)||0)<30*864e5}catch(_){return false}};
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();ev=e;if(!standalone&&!refused())b.hidden=false});
+b.onclick=async()=>{if(!ev)return;ev.prompt();const r=await ev.userChoice;ev=null;b.hidden=true;if(r.outcome!=="accepted"){try{localStorage.setItem(K,Date.now())}catch(_){}}};
+addEventListener("appinstalled",()=>{b.hidden=true;ev=null});
+})();
 </script>
 </body>
 </html>
