@@ -84,12 +84,13 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 
 <main class="wrap">
   <noscript><p class="empty">Ce site a besoin de JavaScript pour afficher les annonces d’objets de collection (monnaies, timbres, cartes, figurines, vinyles, livres, montres, brocante) en Nouvelle-Aquitaine.</p></noscript>
-  <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="echange">⇄ Échanges</button><button data-t="don">🎁 Dons</button><button data-t="crea">🎨 Créateurs</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button><button data-t="msg">Messages</button></nav>
+  <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="echange">⇄ Échanges</button><button data-t="don">🎁 Dons</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button><button data-t="msg">Messages</button></nav>
   <div class="filters">
     <input class="search" id="q" type="search" placeholder="Pièce, disque, figurine, carte…" aria-label="Recherche">
     <select id="cat" aria-label="Catégorie"></select>
     <select id="dep" aria-label="Département"></select>
     <select id="etat" aria-label="État" style="grid-column:1/-1"></select>
+    <select id="spf" aria-label="Type d’animal" hidden style="grid-column:1/-1"></select>
     <input id="max" type="number" min="0" placeholder="Prix max (€)" aria-label="Prix maximum">
     <select id="sort" aria-label="Tri"><option value="new">Plus récentes</option><option value="asc">Prix croissant</option><option value="desc">Prix décroissant</option></select>
   </div>
@@ -97,7 +98,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <p class="count" id="count">Chargement…</p>
   <div class="grid" id="grid"></div>
 </main>
-<footer>Site réservé aux particuliers. Vente, échange et don en main propre.<br><a href="monnaies-medailles.html">Monnaies & médailles</a> · <a href="timbres-cartes-postales.html">Timbres & cartes postales</a> · <a href="cartes-a-collectionner.html">Cartes à collectionner</a> · <a href="jouets-figurines.html">Jouets & figurines</a> · <a href="vinyles-disques.html">Vinyles & disques</a> · <a href="livres-bd-anciennes.html">Livres & BD anciennes</a> · <a href="montres-horlogerie.html">Montres & horlogerie</a> · <a href="antiquites-brocante.html">Antiquités & brocante</a> · <a href="loisirs-creatifs-hobby.html">Hobby & loisirs créatifs</a> · <a href="createurs.html">Créateurs</a><br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a><span id="delWrap"> · <a href="#" id="delAcc" hidden>Supprimer mon compte</a></span></footer>
+<footer>Site réservé aux particuliers. Vente, échange et don en main propre.<br><a href="monnaies-medailles.html">Monnaies & médailles</a> · <a href="timbres-cartes-postales.html">Timbres & cartes postales</a> · <a href="cartes-a-collectionner.html">Cartes à collectionner</a> · <a href="jouets-figurines.html">Jouets & figurines</a> · <a href="vinyles-disques.html">Vinyles & disques</a> · <a href="livres-bd-anciennes.html">Livres & BD anciennes</a> · <a href="montres-horlogerie.html">Montres & horlogerie</a> · <a href="antiquites-brocante.html">Antiquités & brocante</a> · <a href="loisirs-creatifs-hobby.html">Hobby & loisirs créatifs</a> · <a href="createurs.html">Créateurs</a> · <a href="animaux-accessoires.html">Animaux et accessoires</a><br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a><span id="delWrap"> · <a href="#" id="delAcc" hidden>Supprimer mon compte</a></span></footer>
 
 <div id="toast" popover="manual" role="status" aria-live="polite"></div>
 <dialog id="ask"><form class="dl form" id="askForm" method="dialog"><p id="askText" style="margin:0"></p><input id="askInput" maxlength="300" hidden><div class="row"><button class="btn" type="submit">OK</button><button class="btn alt" type="button" id="askNo">Annuler</button></div></form></dialog>
@@ -128,14 +129,17 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <label>Titre<input name="title" required minlength="3" maxlength="70"></label>
   <div class="row"><label style="flex:1" id="priceLbl">Prix (€)<input name="price" id="fprice" type="number" min="0" required></label>
   <label style="flex:1">Catégorie<select name="cat" id="fcat"></select></label></div>
+  <label id="spLbl" hidden>Type d’animal<select name="sp" id="fsp"></select></label>
+  <p class="note" id="animNote" hidden>Animaux : chiens, chats et furets interdits sur ce site, ainsi que les espèces protégées ou soumises à autorisation. Décrivez honnêtement l’état de santé et les besoins de l’animal.</p>
   <div class="row"><label style="flex:1">Département<select name="dep" id="fdep"></select></label>
   <label style="flex:1">Ville<input name="city" required maxlength="40"></label></div>
-  <label>État de l’objet<select name="etat" id="fetat"></select></label>
+  <label id="etatLbl">État de l’objet<select name="etat" id="fetat"></select></label>
   <label id="wantLbl" hidden>Je cherche en échange<input name="want" id="fwant" maxlength="100" placeholder="Ex. : pièces de 2 € commémoratives, 45 tours des années 60…"></label>
   <label>Description<textarea name="desc" rows="3" maxlength="600" required></textarea></label>
   <label id="telLbl">Téléphone (visible seulement par les membres connectés)<input name="tel" type="tel" required pattern="[0-9 +.]{10,16}"></label>
   <div class="field" id="photoField"><span class="lbl">Photos (6 maximum, la première sera la photo principale)</span><div class="thumbs" id="thumbs"></div><label class="btn alt addph" id="addLbl">+ Ajouter des photos<input type="file" accept="image/*" multiple id="photo" hidden></label></div>
   <label class="row" style="align-items:center;flex-wrap:nowrap"><input type="checkbox" name="part" required style="width:auto"> Je certifie être un particulier et non un professionnel.</label>
+  <label class="row" id="animLbl" hidden style="align-items:flex-start;flex-wrap:nowrap"><input type="checkbox" name="anim" id="fanim" style="width:auto;margin-top:4px"> <span>Je certifie que cet animal n’est ni un chien, ni un chat, ni un furet, qu’il n’appartient pas à une espèce protégée et que je respecte la réglementation.</span></label>
   <div class="msg" id="postMsg" role="alert"></div>
   <div class="row"><button class="btn" type="submit" id="postGo">Publier</button><button class="btn alt" type="button" id="cancel">Annuler</button></div>
 </form></dialog>
@@ -144,8 +148,11 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 const SUPABASE_URL="https://buwcofosofpdvesirtpt.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1d2NvZm9zb2ZwZHZlc2lydHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ3MjE3ODYsImV4cCI6MjExMDI5Nzc4Nn0.TH1rg9mRsqTtKlB17--gP62IDyJ2NQirN5FiUV-UqJQ";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const CATS={"🪙":"Monnaies & médailles","📮":"Timbres & cartes postales","🃏":"Cartes à collectionner","🧸":"Jouets & figurines","💿":"Vinyles & disques","📚":"Livres & BD anciennes","🕰️":"Montres & horlogerie","🏺":"Antiquités & brocante","🎨":"Hobby & loisirs créatifs"};
+const CATS={"🪙":"Monnaies & médailles","📮":"Timbres & cartes postales","🃏":"Cartes à collectionner","🧸":"Jouets & figurines","💿":"Vinyles & disques","📚":"Livres & BD anciennes","🕰️":"Montres & horlogerie","🏺":"Antiquités & brocante","🎨":"Hobby & loisirs créatifs","🐾":"Animaux","🧰":"Accessoires pour animaux"};
 const CREA=["🎨"];
+const ANIM=["🐾"];
+const SP=["Poisson","Reptile","Rongeur ou lapin","Oiseau","Autre petit animal"];
+const spOf=a=>{const m=/^Type d’animal : (.+)/.exec(a.description||"");return m?m[1].trim():""};
 const ETATS=["Neuf avec étiquette","Neuf sans étiquette","Très bon état","Bon état","État satisfaisant","À restaurer"];
 const DEPS={16:"Charente",17:"Charente-Maritime",19:"Corrèze",23:"Creuse",24:"Dordogne",33:"Gironde",40:"Landes",47:"Lot-et-Garonne",64:"Pyrénées-Atlantiques",79:"Deux-Sèvres",86:"Vienne",87:"Haute-Vienne"};
 const $=id=>document.getElementById(id);
@@ -158,6 +165,7 @@ const safeUrl=u=>typeof u==="string"&&u.startsWith(PHOTO_BASE)&&!/['"()\s<>\\]/.
 const eur=n=>Number(n).toLocaleString("fr-FR")+" €";
 const opts=(o,all)=>(all?`<option value="">${all}</option>`:"")+Object.entries(o).map(([k,v])=>`<option value="${esc(k)}">${esc(k.length<4&&isNaN(k)?k+" ":k+" – ")}${esc(v)}</option>`).join("");
 $("cat").innerHTML=opts(CATS,"Toutes les catégories");$("dep").innerHTML=opts(DEPS,"Toute la Nouvelle-Aquitaine");
+$("fsp").innerHTML=SP.map(x=>`<option>${x}</option>`).join("");$("spf").innerHTML='<option value="">Tous les types d’animaux</option>'+SP.map(x=>`<option>${x}</option>`).join("");
 $("fcat").innerHTML=opts(CATS);$("fdep").innerHTML=opts(DEPS);$("fetat").innerHTML=ETATS.map(e=>`<option>${e}</option>`).join("");$("etat").innerHTML='<option value="">Tous les états</option>'+ETATS.map(e=>`<option>${e}</option>`).join("");
 
 let creator="",ads=[],user=null,signup=false,favs=new Set(),follows=new Set(),msgs=[],tab="all";
@@ -177,15 +185,16 @@ function render(){
   if(tab==="msg")return renderMsgs();
   if(tab==="crea"&&!creator)return renderCrea();
   const q=norm($("q").value.trim()),c=$("cat").value,d=$("dep").value,m=parseFloat($("max").value),s=$("sort").value,et=$("etat").value;
-  const list=ads.filter(a=>(!q||norm(a.title+" "+a.description+" "+a.city).includes(q))&&(!c||a.category===c)&&(!d||String(a.dept)===d)&&(isNaN(m)||a.price<=m)&&(!et||a.etat===et)&&tabOk(a));
+  const an=c==="🐾";$("spf").hidden=!an;$("etat").hidden=an;const spv=an?$("spf").value:"";
+  const list=ads.filter(a=>(!q||norm(a.title+" "+a.description+" "+a.city).includes(q))&&(!c||a.category===c)&&(!d||String(a.dept)===d)&&(isNaN(m)||a.price<=m)&&(!et||an||a.etat===et)&&(!spv||spOf(a)===spv)&&tabOk(a));
   list.sort((a,b)=>s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:when(b)-when(a));
   $("count").innerHTML=(tab==="crea"?'<button class="btn alt" data-crea="">← Tous les créateurs</button> ':"")+list.length+(list.length>1?" annonces":" annonce");
   $("grid").innerHTML=list.length?list.map(a=>`<button class="card" data-id="${esc(a.id)}"><span class="heart" data-fav="${esc(a.id)}" role="button" aria-label="Favori">${favs.has(a.id)?"♥":"♡"}</span>
     <div class="ph">${safeUrl(a.photo_url)?`<img src="${esc(safeUrl(a.photo_url))}" alt="${esc(a.title)}" loading="lazy" decoding="async">`:esc(a.category)}</div>
     <div class="b">${a.sold?`<span class="tag" style="background:var(--muted)">${doneTxt(a)}</span> `:''}${kindOf(a)!=="vente"?`<span class="tag k">${esc(KINDS[kindOf(a)])}</span> `:''}${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
-    <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
+    <div class="meta">${esc(ANIM.includes(a.category)?spOf(a):a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
 }
-["q","cat","dep","etat","max","sort"].forEach(id=>$(id).addEventListener("input",render));
+["q","cat","dep","etat","max","sort","spf"].forEach(id=>$(id).addEventListener("input",render));
 $("grid").addEventListener("click",async e=>{const cv=e.target.closest("[data-conv]");if(cv){openThread(cv.dataset.conv);return}const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b&&b.dataset.id)openDetail(b.dataset.id)});
 
 function openDetail(id){
@@ -194,11 +203,11 @@ function openDetail(id){
   const ph=(a.photos&&a.photos.length?a.photos:(a.photo_url?[a.photo_url]:[])).map(safeUrl).filter(Boolean);
   $("detailBody").innerHTML=`<div class="ph" id="mainPh" style="${ph[0]?`background-image:url('${esc(ph[0])}')`:''}">${ph[0]?"":esc(a.category)}</div>${ph.length>1?`<div class="thumbs">${ph.map(u=>`<button type="button" class="th" data-u="${esc(u)}" style="background-image:url('${esc(u)}')" aria-label="Voir la photo"></button>`).join("")}</div>`:""}
   ${a.sold?`<span class="tag" style="background:var(--muted);justify-self:start">${doneTxt(a)}</span>`:""}<h2>${esc(a.title)}</h2><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
-  <div class="meta">${esc(KINDS[kindOf(a)])} · ${esc(CATS[a.category]||"")} · ${esc(a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
+  <div class="meta">${esc(KINDS[kindOf(a)])} · ${esc(CATS[a.category]||"")} · ${esc(ANIM.includes(a.category)?spOf(a):a.etat)} · ${esc(a.city)} (${esc(DEPS[a.dept]||a.dept)}) · ${ago(a)}</div>
   <p style="white-space:pre-line">${esc(a.description)}</p>
   <div class="meta">Vendeur : <b>${esc(a.seller_name||"Particulier")}</b></div>
   <div id="tel" class="row">${mine||a.sold?"":'<button class="btn" id="contactBtn">✉ Contacter l’annonceur</button>'}<button class="btn alt" id="showTel">Voir le numéro</button></div>
-  <p class="note">Demandez des photos détaillées et vérifiez l’objet avant tout accord. Remise en main propre uniquement, sans paiement à l’avance.</p>
+  <p class="note">Demandez des photos détaillées et vérifiez l’objet avant tout accord. ${ANIM.includes(a.category)?"Animal vivant : vérifiez sa santé, ses conditions de détention et la réglementation de l’espèce avant tout accord. Remise en main propre uniquement, sans paiement à l’avance.":"Remise en main propre uniquement, sans paiement à l’avance."}</p>
   <div class="row"><button class="btn alt" id="fav">${favs.has(id)?"♥ Retirer des favoris":"♡ Ajouter aux favoris"}</button>${mine?'<button class="btn alt" id="edit">Modifier</button><button class="btn alt" id="done">'+(a.sold?"Remettre en ligne":"Marquer comme "+doneTxt(a).toLowerCase())+'</button><button class="btn alt" id="boost">Remonter en tête</button><button class="btn alt" id="del">Supprimer</button>':'<button class="btn alt" id="follow">'+(follows.has(a.user_id)?"Ne plus suivre ce vendeur":"Suivre ce vendeur")+'</button><button class="btn alt" id="rep">Signaler</button>'}<button class="btn alt" id="share">↗ Partager</button><button class="btn alt" id="close">Fermer</button></div>`;
   document.querySelectorAll("#detailBody .th").forEach(t=>t.onclick=()=>{$("mainPh").style.backgroundImage="url('"+t.dataset.u+"')"});
   if($("contactBtn"))$("contactBtn").onclick=()=>openContact(a);
@@ -368,14 +377,16 @@ $("delAcc").onclick=async e=>{
 
 /* Dépôt d'annonce */
 $("newBtn").onclick=()=>{if(!user)openAuth("Connectez-vous pour déposer une annonce.");else{$("postMsg").textContent="";syncKind();$("post").showModal()}};
-function syncKind(){const k=$("fkind").value;$("priceLbl").hidden=k!=="vente";$("fprice").required=k==="vente";$("wantLbl").hidden=k!=="echange"||!!editing}
+function syncKind(){const k=$("fkind").value;$("priceLbl").hidden=k!=="vente";$("fprice").required=k==="vente";$("wantLbl").hidden=k!=="echange"||!!editing;syncCat()}
 $("fkind").addEventListener("change",syncKind);
+function syncCat(){const a=ANIM.includes($("fcat").value);$("animNote").hidden=!a;$("animLbl").hidden=!a;$("fanim").required=a;$("spLbl").hidden=!a;$("fsp").required=a;$("etatLbl").hidden=a;if(a)$("fetat").value="Bon état"}
+$("fcat").addEventListener("change",syncCat);
 $("cancel").onclick=()=>$("post").close();
 function resize(file){return new Promise(res=>{if(!file)return res(null);const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,900/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=i.width*k;c.height=i.height*k;c.getContext("2d").drawImage(i,0,0,c.width,c.height);c.toBlob(b=>res(b),"image/jpeg",.75)};i.onerror=()=>res(null);i.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
 let editing=null;
 function startEdit(a){
   editing=a.id;const fm=$("form").elements;
-  fm.kind.value=kindOf(a);fm.title.value=a.title;fm.price.value=a.price;fm.cat.value=a.category;fm.dep.value=a.dept;fm.city.value=a.city;fm.etat.value=a.etat;fm.desc.value=a.description;fm.part.checked=true;
+  fm.kind.value=kindOf(a);fm.title.value=a.title;fm.price.value=a.price;fm.cat.value=a.category;fm.dep.value=a.dept;fm.city.value=a.city;fm.etat.value=a.etat;fm.desc.value=a.description.replace(/^Type d’animal : .+\n?/,"");if(spOf(a))fm.sp.value=spOf(a);fm.part.checked=true;
   $("kindLbl").hidden=true;$("telLbl").hidden=true;fm.tel.required=false;$("photoField").hidden=true;
   $("postTitle").textContent="Modifier l’annonce";$("postGo").textContent="Enregistrer";$("postMsg").textContent="";
   syncKind();$("detail").close();$("post").showModal();
@@ -391,7 +402,7 @@ $("form").addEventListener("submit",async e=>{
   btn.disabled=true;msg.textContent="Publication…";
   try{
     if(editing){
-      const up=await sb.from("listings").update({title:f.get("title").trim(),description:f.get("desc").trim(),price:k==="vente"?+f.get("price"):0,category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim()}).eq("id",editing);
+      const up=await sb.from("listings").update({title:f.get("title").trim(),description:((ANIM.includes(f.get("cat"))?"Type d’animal : "+f.get("sp")+"\n":"")+f.get("desc").trim()).slice(0,700),price:k==="vente"?+f.get("price"):0,category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim()}).eq("id",editing);
       if(up.error)throw up.error;
       $("post").close();btn.disabled=false;load();return;
     }
@@ -401,7 +412,7 @@ $("form").addEventListener("submit",async e=>{
     for(const p of pics){const path=`${user.id}/${crypto.randomUUID()}.jpg`;
       const up=await sb.storage.from("photos").upload(path,p.b,{contentType:"image/jpeg"});
       if(up.error)throw up.error;urls.push(sb.storage.from("photos").getPublicUrl(path).data.publicUrl)}
-    const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:((k==="echange"&&f.get("want").trim()?"Échange souhaité : "+f.get("want").trim()+"\n":"")+f.get("desc").trim()).slice(0,700),kind:k,price:k==="vente"?+f.get("price"):0,category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url:urls[0]||null,photos:urls,seller_name:pseudo||null}).select("id").single();
+    const ins=await sb.from("listings").insert({title:f.get("title").trim(),description:((ANIM.includes(f.get("cat"))?"Type d’animal : "+f.get("sp")+"\n":"")+(k==="echange"&&f.get("want").trim()?"Échange souhaité : "+f.get("want").trim()+"\n":"")+f.get("desc").trim()).slice(0,700),kind:k,price:k==="vente"?+f.get("price"):0,category:f.get("cat"),etat:f.get("etat"),dept:+f.get("dep"),city:f.get("city").trim(),photo_url:urls[0]||null,photos:urls,seller_name:pseudo||null}).select("id").single();
     if(ins.error)throw ins.error;
     const ct=await sb.from("listing_contacts").insert({listing_id:ins.data.id,phone:f.get("tel").trim()});
     if(ct.error){await sb.from("listings").delete().eq("id",ins.data.id);throw ct.error}
@@ -409,7 +420,7 @@ $("form").addEventListener("submit",async e=>{
   }catch(err){msg.textContent="Erreur : "+(err.message||err)}
   btn.disabled=false;
 });
-{const p=new URLSearchParams(location.search);if(CATS[p.get("cat")])$("cat").value=p.get("cat");if(DEPS[p.get("dep")])$("dep").value=p.get("dep");if(p.get("tab")==="crea"){tab="crea";syncTabs()}}
+{const p=new URLSearchParams(location.search);if(CATS[p.get("cat")])$("cat").value=p.get("cat");if(DEPS[p.get("dep")])$("dep").value=p.get("dep");if(p.get("tab")==="crea"){tab="crea";syncTabs()}if(SP.includes(p.get("sp")))$("spf").value=p.get("sp");}
 load();
 </script>
 <script>
