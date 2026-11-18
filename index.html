@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Collectionneurs d’Aquitaine – objets de collection entre particuliers</title>
-<meta name="description" content="Petites annonces d’objets de collection entre particuliers en Nouvelle-Aquitaine : vente, échange et don.">
+<title>Trésors d’Aquitaine – objets de collection entre particuliers</title>
+<meta name="description" content="Petites annonces entre particuliers en Nouvelle-Aquitaine : objets de collection, hobbies et créations. Vente, échange et don.">
 <meta name="theme-color" content="#1f4a40">
-<meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:site_name" content="Collectionneurs d’Aquitaine">
-<meta property="og:title" content="Collectionneurs d’Aquitaine – vendre, échanger, donner"><meta property="og:description" content="Petites annonces d’objets de collection entre particuliers en Nouvelle-Aquitaine : vente, échange et don.">
+<meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:site_name" content="Trésors d’Aquitaine">
+<meta property="og:title" content="Trésors d’Aquitaine – vendre, échanger, donner"><meta property="og:description" content="Petites annonces entre particuliers en Nouvelle-Aquitaine : objets de collection, hobbies et créations. Vente, échange et don.">
 <link rel="canonical" href="https://snakewars26.github.io/collectionneurs-aquitaine/">
 <meta property="og:url" content="https://snakewars26.github.io/collectionneurs-aquitaine/"><meta property="og:image" content="https://snakewars26.github.io/collectionneurs-aquitaine/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://snakewars26.github.io/collectionneurs-aquitaine/og-image.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🪙%3C/text%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;600;800&display=swap">
-<meta property="og:image:alt" content="Collectionneurs d’Aquitaine : vendre, échanger ou donner des objets de collection"><meta name="twitter:title" content="Collectionneurs d’Aquitaine – vendre, échanger, donner">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Collectionneurs d’Aquitaine","url":"https://snakewars26.github.io/collectionneurs-aquitaine/","inLanguage":"fr-FR","description":"Petites annonces d’objets de collection entre particuliers en Nouvelle-Aquitaine : vente, échange et don."}</script>
+<meta property="og:image:alt" content="Trésors d’Aquitaine : vendre, échanger ou donner des objets de collection"><meta name="twitter:title" content="Trésors d’Aquitaine – vendre, échanger, donner">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Trésors d’Aquitaine","url":"https://snakewars26.github.io/collectionneurs-aquitaine/","inLanguage":"fr-FR","description":"Petites annonces entre particuliers en Nouvelle-Aquitaine : objets de collection, hobbies et créations. Vente, échange et don."}</script>
 <style>
 :root{--bg:#eef3f1;--surface:#fff;--ink:#16302b;--muted:#5d716c;--line:#d3dedb;--accent:#8e2a3b;--accent-ink:#fff;--pine:#1f4a40;--head-ink:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#0f1f1c;--surface:#172b27;--ink:#e6efec;--muted:#9bb0aa;--line:#2b443e;--accent:#e0708a;--accent-ink:#1a0a0e;--pine:#1a3d35;--head-ink:#e6efec}}
@@ -77,13 +77,13 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 </head>
 <body>
 <header><div class="wrap">
-  <div><h1>Collectionneurs d’Aquitaine</h1><p>Vendre, échanger ou donner des objets de collection, en main propre.</p></div>
+  <div><h1>Trésors d’Aquitaine</h1><p>Collections, hobbies et créations : vendre, échanger ou donner, en Nouvelle-Aquitaine.</p></div>
   <div class="row"><button class="btn light" id="newBtn">Déposer une annonce</button><button class="btn light" id="authBtn">Connexion</button></div>
 </div></header>
 
 <main class="wrap">
   <noscript><p class="empty">Ce site a besoin de JavaScript pour afficher les annonces d’objets de collection (monnaies, timbres, cartes, figurines, vinyles, livres, montres, brocante) en Nouvelle-Aquitaine.</p></noscript>
-  <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="echange">⇄ Échanges</button><button data-t="don">🎁 Dons</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button><button data-t="msg">Messages</button></nav>
+  <nav class="tabs" id="tabs"><button data-t="all" class="on">Toutes</button><button data-t="echange">⇄ Échanges</button><button data-t="don">🎁 Dons</button><button data-t="crea">🎨 Créateurs</button><button data-t="fav">♥ Favoris</button><button data-t="follow">Suivis</button><button data-t="mine">Mes annonces</button><button data-t="msg">Messages</button></nav>
   <div class="filters">
     <input class="search" id="q" type="search" placeholder="Pièce, disque, figurine, carte…" aria-label="Recherche">
     <select id="cat" aria-label="Catégorie"></select>
@@ -96,7 +96,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
   <p class="count" id="count">Chargement…</p>
   <div class="grid" id="grid"></div>
 </main>
-<footer>Site réservé aux particuliers. Vente, échange et don en main propre uniquement.<br><a href="monnaies-medailles.html">Monnaies & médailles</a> · <a href="timbres-cartes-postales.html">Timbres & cartes postales</a> · <a href="cartes-a-collectionner.html">Cartes à collectionner</a> · <a href="jouets-figurines.html">Jouets & figurines</a> · <a href="vinyles-disques.html">Vinyles & disques</a> · <a href="livres-bd-anciennes.html">Livres & BD anciennes</a> · <a href="montres-horlogerie.html">Montres & horlogerie</a> · <a href="antiquites-brocante.html">Antiquités & brocante</a><br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a><span id="delWrap"> · <a href="#" id="delAcc" hidden>Supprimer mon compte</a></span></footer>
+<footer>Site réservé aux particuliers. Vente, échange et don en main propre.<br><a href="monnaies-medailles.html">Monnaies & médailles</a> · <a href="timbres-cartes-postales.html">Timbres & cartes postales</a> · <a href="cartes-a-collectionner.html">Cartes à collectionner</a> · <a href="jouets-figurines.html">Jouets & figurines</a> · <a href="vinyles-disques.html">Vinyles & disques</a> · <a href="livres-bd-anciennes.html">Livres & BD anciennes</a> · <a href="montres-horlogerie.html">Montres & horlogerie</a> · <a href="antiquites-brocante.html">Antiquités & brocante</a> · <a href="loisirs-creatifs-hobby.html">Hobby & loisirs créatifs</a> · <a href="createurs.html">Créateurs</a><br><a href="legal.html#mentions">Mentions légales</a> · <a href="legal.html#cgu">CGU</a> · <a href="legal.html#confidentialite">Confidentialité</a><span id="delWrap"> · <a href="#" id="delAcc" hidden>Supprimer mon compte</a></span></footer>
 
 <div id="toast" popover="manual" role="status" aria-live="polite"></div>
 <dialog id="ask"><form class="dl form" id="askForm" method="dialog"><p id="askText" style="margin:0"></p><input id="askInput" maxlength="300" hidden><div class="row"><button class="btn" type="submit">OK</button><button class="btn alt" type="button" id="askNo">Annuler</button></div></form></dialog>
@@ -143,7 +143,8 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:.8rem;text-align:cent
 const SUPABASE_URL="https://buwcofosofpdvesirtpt.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1d2NvZm9zb2ZwZHZlc2lydHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ3MjE3ODYsImV4cCI6MjExMDI5Nzc4Nn0.TH1rg9mRsqTtKlB17--gP62IDyJ2NQirN5FiUV-UqJQ";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const CATS={"🪙":"Monnaies & médailles","📮":"Timbres & cartes postales","🃏":"Cartes à collectionner","🧸":"Jouets & figurines","💿":"Vinyles & disques","📚":"Livres & BD anciennes","🕰️":"Montres & horlogerie","🏺":"Antiquités & brocante"};
+const CATS={"🪙":"Monnaies & médailles","📮":"Timbres & cartes postales","🃏":"Cartes à collectionner","🧸":"Jouets & figurines","💿":"Vinyles & disques","📚":"Livres & BD anciennes","🕰️":"Montres & horlogerie","🏺":"Antiquités & brocante","🎨":"Hobby & loisirs créatifs"};
+const CREA=["🎨"];
 const ETATS=["Neuf avec étiquette","Neuf sans étiquette","Très bon état","Bon état","État satisfaisant","À restaurer"];
 const DEPS={16:"Charente",17:"Charente-Maritime",19:"Corrèze",23:"Creuse",24:"Dordogne",33:"Gironde",40:"Landes",47:"Lot-et-Garonne",64:"Pyrénées-Atlantiques",79:"Deux-Sèvres",86:"Vienne",87:"Haute-Vienne"};
 const $=id=>document.getElementById(id);
@@ -158,7 +159,7 @@ const opts=(o,all)=>(all?`<option value="">${all}</option>`:"")+Object.entries(o
 $("cat").innerHTML=opts(CATS,"Toutes les catégories");$("dep").innerHTML=opts(DEPS,"Toute la Nouvelle-Aquitaine");
 $("fcat").innerHTML=opts(CATS);$("fdep").innerHTML=opts(DEPS);$("fetat").innerHTML=ETATS.map(e=>`<option>${e}</option>`).join("");$("etat").innerHTML='<option value="">Tous les états</option>'+ETATS.map(e=>`<option>${e}</option>`).join("");
 
-let ads=[],user=null,signup=false,favs=new Set(),follows=new Set(),msgs=[],tab="all";
+let creator="",ads=[],user=null,signup=false,favs=new Set(),follows=new Set(),msgs=[],tab="all";
 const KINDS={vente:"Vente",echange:"Échange",don:"Don"};
 const kindOf=a=>a.kind||"vente";
 const doneTxt=a=>({vente:"Vendu",echange:"Échangé",don:"Donné"})[kindOf(a)];
@@ -173,17 +174,18 @@ async function load(){
 }
 function render(){
   if(tab==="msg")return renderMsgs();
+  if(tab==="crea"&&!creator)return renderCrea();
   const q=norm($("q").value.trim()),c=$("cat").value,d=$("dep").value,m=parseFloat($("max").value),s=$("sort").value,et=$("etat").value;
   const list=ads.filter(a=>(!q||norm(a.title+" "+a.description+" "+a.city).includes(q))&&(!c||a.category===c)&&(!d||String(a.dept)===d)&&(isNaN(m)||a.price<=m)&&(!et||a.etat===et)&&tabOk(a));
   list.sort((a,b)=>s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:when(b)-when(a));
-  $("count").textContent=list.length+(list.length>1?" annonces":" annonce");
+  $("count").innerHTML=(tab==="crea"?'<button class="btn alt" data-crea="">← Tous les créateurs</button> ':"")+list.length+(list.length>1?" annonces":" annonce");
   $("grid").innerHTML=list.length?list.map(a=>`<button class="card" data-id="${esc(a.id)}"><span class="heart" data-fav="${esc(a.id)}" role="button" aria-label="Favori">${favs.has(a.id)?"♥":"♡"}</span>
     <div class="ph">${safeUrl(a.photo_url)?`<img src="${esc(safeUrl(a.photo_url))}" alt="${esc(a.title)}" loading="lazy" decoding="async">`:esc(a.category)}</div>
     <div class="b">${a.sold?`<span class="tag" style="background:var(--muted)">${doneTxt(a)}</span> `:''}${kindOf(a)!=="vente"?`<span class="tag k">${esc(KINDS[kindOf(a)])}</span> `:''}${a.boosted_at?'<span class="tag">À la une</span>':''}<h3>${esc(a.title)}</h3><div class="price${kindOf(a)==='don'?' free':''}">${priceTxt(a)}</div>
     <div class="meta">${esc(a.etat)}</div><div class="meta">${esc(a.city)} (${a.dept}) · ${ago(a)}</div></div></button>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
 }
 ["q","cat","dep","etat","max","sort"].forEach(id=>$(id).addEventListener("input",render));
-$("grid").addEventListener("click",async e=>{const cv=e.target.closest("[data-conv]");if(cv){openThread(cv.dataset.conv);return}const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b)openDetail(b.dataset.id)});
+$("grid").addEventListener("click",async e=>{const cv=e.target.closest("[data-conv]");if(cv){openThread(cv.dataset.conv);return}const h=e.target.closest("[data-fav]");if(h){toggleFav(h.dataset.fav);return}const b=e.target.closest(".card");if(b&&b.dataset.id)openDetail(b.dataset.id)});
 
 function openDetail(id){
   const a=ads.find(x=>x.id===id);if(!a)return;
@@ -297,16 +299,23 @@ async function loadMine(){
   favs=new Set();follows=new Set();msgs=[];
   if(user){const [f,w]=await Promise.all([sb.from("favorites").select("listing_id"),sb.from("follows").select("seller_id")]);
     (f.data||[]).forEach(r=>favs.add(r.listing_id));(w.data||[]).forEach(r=>follows.add(r.seller_id));}
-  else if(!["all","echange","don"].includes(tab)){tab="all";syncTabs()}
+  else if(!["all","echange","don","crea"].includes(tab)){tab="all";syncTabs()}
   await loadConvs();
   render();
 }
-function syncTabs(){{const f=document.querySelector(".filters");if(f)f.style.display=tab==="msg"?"none":""}document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab))}
+function syncTabs(){{const f=document.querySelector(".filters");if(f)f.style.display=tab==="msg"||(tab==="crea"&&!creator)?"none":""}document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab))}
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-  if(!["all","echange","don"].includes(b.dataset.t)&&!user){openAuth("Connectez-vous pour accéder à cette rubrique.");return}
-  tab=b.dataset.t;syncTabs();render()});
-function tabOk(a){if(a.sold&&tab!=="mine")return false;return tab==="all"||(tab==="fav"&&favs.has(a.id))||(tab==="follow"&&follows.has(a.user_id))||(tab==="mine"&&user&&a.user_id===user.id)||(tab==="echange"&&kindOf(a)==="echange")||(tab==="don"&&kindOf(a)==="don")}
-function emptyMsg(){return {fav:"Aucun favori pour l’instant. Touchez le cœur d’une annonce pour la retrouver ici.",follow:"Vous ne suivez encore personne. Ouvrez une annonce et touchez « Suivre ce vendeur ».",mine:"Vous n’avez pas encore d’annonce. Touchez « Déposer une annonce ».",echange:"Aucun échange proposé pour l’instant. Déposez le premier !",don:"Aucun don pour l’instant. Vous avez des objets à donner ? Déposez une annonce.",all:"Aucune annonce ne correspond. Soyez le premier à déposer la vôtre."}[tab]}
+  if(!["all","echange","don","crea"].includes(b.dataset.t)&&!user){openAuth("Connectez-vous pour accéder à cette rubrique.");return}
+  tab=b.dataset.t;creator="";syncTabs();render()});
+function renderCrea(){
+  const g={};ads.filter(a=>!a.sold&&CREA.includes(a.category)).forEach(a=>{const c=g[a.user_id]=g[a.user_id]||{name:a.seller_name||"Créateur",n:0,cats:new Set(),ph:""};c.n++;c.cats.add(a.category);if(!c.ph&&safeUrl(a.photo_url))c.ph=safeUrl(a.photo_url)});
+  const l=Object.entries(g).sort((x,y)=>y[1].n-x[1].n);
+  $("count").textContent=l.length+(l.length>1?" créateurs":" créateur");
+  $("grid").innerHTML=l.length?l.map(([id,c])=>`<button class="card" data-crea="${esc(id)}"><div class="ph">${c.ph?`<img src="${esc(c.ph)}" alt="" loading="lazy" decoding="async">`:"🎨"}</div><div class="b"><h3>${esc(c.name)}</h3><div class="meta">${c.n} annonce${c.n>1?"s":""} · ${[...c.cats].join(" ")}</div></div></button>`).join(""):`<div class="empty">${emptyMsg()}</div>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-crea]");if(b&&tab==="crea"){creator=b.dataset.crea;syncTabs();render();window.scrollTo(0,0)}});
+function tabOk(a){if(a.sold&&tab!=="mine")return false;return tab==="all"||(tab==="fav"&&favs.has(a.id))||(tab==="follow"&&follows.has(a.user_id))||(tab==="mine"&&user&&a.user_id===user.id)||(tab==="echange"&&kindOf(a)==="echange")||(tab==="don"&&kindOf(a)==="don")||(tab==="crea"&&CREA.includes(a.category)&&a.user_id===creator)}
+function emptyMsg(){return {fav:"Aucun favori pour l’instant. Touchez le cœur d’une annonce pour la retrouver ici.",follow:"Vous ne suivez encore personne. Ouvrez une annonce et touchez « Suivre ce vendeur ».",mine:"Vous n’avez pas encore d’annonce. Touchez « Déposer une annonce ».",echange:"Aucun échange proposé pour l’instant. Déposez le premier !",don:"Aucun don pour l’instant. Vous avez des objets à donner ? Déposez une annonce.",crea:"Aucun créateur pour l’instant. Déposez une annonce dans « Hobby » pour apparaître ici.",all:"Aucune annonce ne correspond. Soyez le premier à déposer la vôtre."}[tab]}
 
 /* Auth */
 function setUser(u){const same=user&&u&&user.id===u.id;user=u;if(!same){openConv=null;subscribe()}$("delAcc").hidden=!u;$("authBtn").textContent=u?"Déconnexion":"Connexion";loadMine()}
@@ -399,7 +408,7 @@ $("form").addEventListener("submit",async e=>{
   }catch(err){msg.textContent="Erreur : "+(err.message||err)}
   btn.disabled=false;
 });
-{const p=new URLSearchParams(location.search);if(CATS[p.get("cat")])$("cat").value=p.get("cat");if(DEPS[p.get("dep")])$("dep").value=p.get("dep")}
+{const p=new URLSearchParams(location.search);if(CATS[p.get("cat")])$("cat").value=p.get("cat");if(DEPS[p.get("dep")])$("dep").value=p.get("dep");if(p.get("tab")==="crea"){tab="crea";syncTabs()}}
 load();
 </script>
 </body>
